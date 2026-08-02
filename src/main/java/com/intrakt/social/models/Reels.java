@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-//@Getter
-//@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,7 +22,7 @@ public class Reels {
 
     @ManyToOne
     @JoinColumn(
-            name = "user_id",  // Foreign key column for User entity
+            name = "user_id",
             referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_create_reel_user_id", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE") // DB-level cascade on delete
     )

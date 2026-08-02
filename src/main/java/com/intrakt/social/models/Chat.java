@@ -28,25 +28,25 @@ public class Chat {
 
     @ManyToMany
     @JoinTable(
-            name = "chat_user", // Name of the join table
+            name = "chat_user",
             joinColumns = @JoinColumn(
-                    name = "chat_id",  // Foreign key column for Chat entity
+                    name = "chat_id",
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
-                            name = "fk_user_chat_id",  // Foreign key constraint name
+                            name = "fk_user_chat_id",
                             foreignKeyDefinition = "FOREIGN KEY (chat_id) REFERENCES chat(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
                     )
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = "user_id",  // Foreign key column for User entity
-                    referencedColumnName = "id",  // Reference to the primary key of User entity
+                    name = "user_id",
+                    referencedColumnName = "id",
                     foreignKey = @ForeignKey(
-                            name = "fk_chat_user_id",  // Foreign key constraint name
+                            name = "fk_chat_user_id",
                             foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
                     )
             )
     )
-    private List<User> users = new ArrayList<User>();
+    private List<User> users = new ArrayList<>();
 
     private LocalDateTime timestamp;
 

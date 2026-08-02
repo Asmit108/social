@@ -26,7 +26,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(
-            name = "user_id",  // Foreign key column for User entity
+            name = "user_id",
             referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_commented_user_id", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE") // DB-level cascade on delete
     )
@@ -34,20 +34,20 @@ public class Comment {
 
     @ManyToMany
     @JoinTable(
-            name = "comment_likes", // Name of the join table
+            name = "comment_likes",
             joinColumns = @JoinColumn(
-                    name = "comment_id",  // Foreign key column for Comment entity
+                    name = "comment_id",
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
-                            name = "fk_liked_comment_id",  // Foreign key constraint name
+                            name = "fk_liked_comment_id",
                             foreignKeyDefinition = "FOREIGN KEY (comment_id) REFERENCES comment(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
                     )
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = "user_id",  // Foreign key column for User entity
-                    referencedColumnName = "id",  // Reference to the primary key of User entity
+                    name = "user_id",
+                    referencedColumnName = "id",
                     foreignKey = @ForeignKey(
-                            name = "fk_liking_comment_user_id",  // Foreign key constraint name
+                            name = "fk_liking_comment_user_id",
                             foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
                     )
             )
@@ -56,7 +56,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(
-            name = "post_id",  // Foreign key column for User entity
+            name = "post_id",
             referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_commented_post_id", foreignKeyDefinition = "FOREIGN KEY (post_id) REFERENCES post(id) ON UPDATE CASCADE ON DELETE CASCADE") // DB-level cascade on delete
     )
@@ -65,8 +65,3 @@ public class Comment {
     private LocalDateTime createdAt;
 
 }
-//mappedBy can only be used on:
-//
-//@OneToMany
-//@OneToOne
-//@ManyToMany

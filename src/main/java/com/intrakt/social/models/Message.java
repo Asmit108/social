@@ -27,7 +27,7 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(
-            name = "user_id",  // Foreign key column for User entity
+            name = "user_id",
             referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_create_message_user_id", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE") // DB-level cascade on delete
     )
@@ -35,7 +35,7 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(
-            name = "chat_id",  // Foreign key column for User entity
+            name = "chat_id",
             referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_create_chat_id", foreignKeyDefinition = "FOREIGN KEY (chat_id) REFERENCES chat(id) ON DELETE CASCADE ON UPDATE CASCADE") // DB-level cascade on delete
     )

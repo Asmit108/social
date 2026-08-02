@@ -45,27 +45,14 @@ public class User {
     private String role;
     private String gender;
 
-    //there is another methods: manually create a join table model, or we can use @ElementCollection
-//    The @ElementCollection annotation is used for storing collections of basic types
-//            (like Long, String, etc.) or embeddable objects.
-//    although extra table will be created same like this, but There is no foreign key constraint
-//    in the database to ensure the validity of followerIds
-//    @ElementCollection
-//    private List<Long> followerIds = new ArrayList<>();
-// insertion integrity is by default
-// for deletion integrity, we need to use either ON DELETE CASCADE (DB feature)
-// or CASCADETYPE.REMOVE (JPA feature)
-// for updation, use ON UPDATE CASCADE(DB feature)
-//Foreign key constraints must have unique names globally within database schema,
-//regardless of whether they refer to different tables or columns.
     @ManyToMany
     @JoinTable(
-            name = "user_followers", // Name of the join table
+            name = "user_followers",
             joinColumns = @JoinColumn(
                     name = "user_id",
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
-                            name = "fk_user_follower_id",  // Name of the foreign key
+                            name = "fk_user_follower_id",
                             foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE"
                     )
             ),
@@ -82,12 +69,12 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "user_followings", // Name of the join table
+            name = "user_followings",
             joinColumns = @JoinColumn(
                     name = "user_id",
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
-                            name = "fk_user_follwing_id",  // Name of the foreign key
+                            name = "fk_user_follwing_id",
                             foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE"
                     )
             ),
@@ -135,129 +122,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Message> createdMessage = new ArrayList<>();
-
-
-//    public User(){
-//
-//    }
-//
-//    public User(Integer id, String firstName, String lastName, String email, String password, String gender, List<Message> createdMessage, List<Reels> createdReel, List<Story> createdStory, List<User> followers, List<Post> createdPost,List<User> followings, List<Post> savedPost) {
-//        this.id = id;
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.email = email;
-//        this.password = password;
-//        this.gender = gender;
-//        this.followers = followers;
-//        this.followings = followings;
-//        this.createdPost = createdPost;
-//        this.savedPost = savedPost;
-//        this.createdStory = createdStory;
-//        this.createdReel = createdReel;
-//        this.createdMessage = createdMessage;
-//    }
-//
-//    public String getGender() {
-//        return gender;
-//    }
-//
-//    public void setGender(String gender) {
-//        this.gender = gender;
-//    }
-//
-//    public List<User> getFollowers() {
-//        return followers;
-//    }
-//
-//    public void setFollowers(List<User> followers) {
-//        this.followers = followers;
-//    }
-//
-//    public List<User> getFollowings() {
-//        return followings;
-//    }
-//
-//    public void setFollowings(List<User> followings) {
-//        this.followings = followings;
-//    }
-//
-//    public List<Post> getSavedPost() {
-//        return savedPost;
-//    }
-//
-//    public void setSavedPost(List<Post> savedPost) {
-//        this.savedPost = savedPost;
-//    }
-//
-//    public Integer getId() {
-//        return id;
-//    }
-//
-//    public void setId(Integer id) {
-//        this.id = id;
-//    }
-//
-//    public void setFirstName(String firstName) {
-//        this.firstName = firstName;
-//    }
-//
-//    public void setLastName(String lastName) {
-//        this.lastName = lastName;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
-//    public String getFirstName() {
-//        return firstName;
-//    }
-//
-//    public String getLastName() {
-//        return lastName;
-//    }
-//
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public List<Post> getCreatedPost() {
-//        return createdPost;
-//    }
-//
-//    public void setCreatedPost(List<Post> createdPost) {
-//        this.createdPost = createdPost;
-//    }
-//
-//    public List<Story> getCreatedStory() {
-//        return createdStory;
-//    }
-//
-//    public void setCreatedStory(List<Story> createdStory) {
-//        this.createdStory = createdStory;
-//    }
-
-    public List<Reels> getCreatedReel() {
-        return createdReel;
-    }
-
-    public void setCreatedReel(List<Reels> createdReel) {
-        this.createdReel = createdReel;
-    }
-
-    public List<Message> getCreatedMessage() {
-        return createdMessage;
-    }
-
-    public void setCreatedMessage(List<Message> createdMessage) {
-        this.createdMessage = createdMessage;
-    }
 }

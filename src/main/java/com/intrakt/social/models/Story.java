@@ -22,7 +22,7 @@ public class Story {
 
     @ManyToOne
     @JoinColumn(
-            name = "user_id",  // Foreign key column for User entity
+            name = "user_id",
             referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_create_story_user_id", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE") // DB-level cascade on delete
     )

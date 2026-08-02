@@ -8,12 +8,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 
-//Throwable
-//├── Exception
-//└── Error
 @ControllerAdvice
-//Global logic that applies to multiple controllers
-//listen to exception of controllers
 public class GlobalExceptions {
 
     @ExceptionHandler(UserException.class)

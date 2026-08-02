@@ -22,5 +22,4 @@ public class GlobalExceptions {
         ErrorDetails errorDetails = new ErrorDetails(ue.getMessage(),req.getDescription(false), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
-
 }

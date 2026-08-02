@@ -13,25 +13,24 @@ import java.util.List;
 @RestController
 public class StoryController {
 
-    @Autowired
-    private StoryService storyService;
+    private final StoryService storyService;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public StoryController(StoryService storyService, UserService userService) {
+        this.storyService = storyService;
+        this.userService = userService;
+    }
 
     @PostMapping("/api/story")
     public Story createStory(@RequestBody Story story, @RequestHeader("Authorization") String jwt) throws UserException {
         User user =userService.findUserByJwt(jwt);
-        Story createdStory = storyService.createStory(story,user);
-        return createdStory;
+        return storyService.createStory(story,user);
     }
 
     @GetMapping("/api/story/user/{userId}")
     public List<Story> findUserStory(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) throws Exception {
-        User user =userService.findUserByJwt(jwt);
-        List<Story> createdStory = storyService.findStoryByUserId(userId);
-        return createdStory;
+        userService.findUserByJwt(jwt);
+        return storyService.findStoryByUserId(userId);
     }
-
-
 }

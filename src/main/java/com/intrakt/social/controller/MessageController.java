@@ -12,23 +12,24 @@ import java.util.List;
 @RestController
 public class MessageController {
 
-    @Autowired
-    private MessageService messageService;
+    private final MessageService messageService;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public MessageController(MessageService messageService, UserService userService) {
+        this.messageService = messageService;
+        this.userService = userService;
+    }
 
     @PostMapping("/api/messages/chat/{chatId}")
     public Message createMessage(@PathVariable("chatId") Integer chatId, @RequestBody Message req, @RequestHeader("Authorization") String jwt) throws Exception {
         User reqUser = userService.findUserByJwt(jwt);
-        Message message = messageService.createMessage(reqUser,chatId,req);
-        return message;
+        return messageService.createMessage(reqUser,chatId,req);
     }
 
     @GetMapping("/api/messages/chat/{chatId}")
     public List<Message> findChatMessages(@PathVariable("chatId") Integer chatId, @RequestHeader("Authorization") String jwt) throws Exception {
-        User reqUser = userService.findUserByJwt(jwt);
-        List<Message> messages = messageService.findChatsMessages(chatId);
-        return messages;
+        userService.findUserByJwt(jwt);
+        return messageService.findChatsMessages(chatId);
     }
 }

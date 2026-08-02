@@ -22,17 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final CustomeUserDetailsService customUserDetails;
+    private final UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private CustomeUserDetailsService customUserDetails;
-
-    @Autowired
-    private UserRepository userRepository;
+    public AuthController(UserService userService, BCryptPasswordEncoder passwordEncoder,  CustomeUserDetailsService customUserDetails, UserRepository userRepository) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.customUserDetails = customUserDetails;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/signup")
     public AuthResponse createUser(@RequestBody User user) throws Exception {
@@ -51,8 +52,7 @@ public class AuthController {
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser);
         String token= JwtProvider.generateToken(authentication);
-        AuthResponse res=new AuthResponse(token,"register success", savedUser.getRole());
-        return res;
+        return new AuthResponse(token,"register success", savedUser.getRole());
     }
 
     @PostMapping("/signin")
@@ -64,8 +64,7 @@ public class AuthController {
             throw new Exception("User not found");
         }
 
-        AuthResponse res=new AuthResponse(token,"login success", user.getRole());
-        return res;
+        return new AuthResponse(token,"login success", user.getRole());
     }
 
     private Authentication authenticate(LoginRequest loginRequest) throws Exception {

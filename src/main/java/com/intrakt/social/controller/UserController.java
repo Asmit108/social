@@ -7,38 +7,37 @@ import com.intrakt.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 public class UserController {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    UserService userService;
+    public UserController(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @GetMapping("/api/users")
     public List<User> getUsers() {
-
-          List<User> users=userRepository.findAll();
-          return users;
+        return userRepository.findAll();
     }
 
     @GetMapping("/api/users/{userId}")
     public User getUserById(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) throws UserException {
         User user=userService.findUserById(userId);
-        User reqUser=userService.findUserByJwt(jwt);
+        userService.findUserByJwt(jwt);
         return user;
     }
 
     @PutMapping("/api/users")
     public User updateUser(@RequestHeader("Authorization") String jwt,@RequestBody User user) throws UserException {
         User reqUser=userService.findUserByJwt(jwt);
-        User updatedUser=userService.updateUser(user,reqUser.getId());
-        return updatedUser;
+        return userService.updateUser(user,reqUser.getId());
     }
 
     @DeleteMapping("/api/users")
@@ -51,19 +50,16 @@ public class UserController {
     @PutMapping("/api/users/follow/{userId2}")
     public User followUserHandler(@RequestHeader("Authorization") String jwt,@PathVariable Integer userId2) throws UserException{
          User reqUser=userService.findUserByJwt(jwt);
-         User user=userService.followUser(reqUser.getId(),userId2);
-         return user;
+        return userService.followUser(reqUser.getId(),userId2);
     }
 
     @GetMapping("/api/users/search")
     public List<User> searchUser(@RequestParam("query") String query) throws UserException{
-        List<User> users=userService.searchUser(query);
-        return users;
+        return userService.searchUser(query);
     }
 
     @GetMapping("/api/users/profile")
     public User getUserFromToken(@RequestHeader("Authorization") String jwt) throws UserException{
-//         System.out.println("jwt-------" + jwt);
         User user=userService.findUserByJwt(jwt);
         user.setPassword(null);
         return user;
@@ -73,7 +69,7 @@ public class UserController {
     @DeleteMapping("/api/admin/users/{userId}")
     public String deleteUser(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) throws UserException {
         Optional<User> user1=userRepository.findById(userId);
-        User reqUser=userService.findUserByJwt(jwt);
+        userService.findUserByJwt(jwt);
         if(user1.isEmpty()) {
             throw new UserException("user not found with id" + userId);
         }
@@ -83,11 +79,7 @@ public class UserController {
 
     @PutMapping("/api/admin/users/{userId}")
     public User changeRole(@RequestHeader("Authorization") String jwt,@PathVariable Integer userId, @RequestParam("newRole") String newRole) throws UserException{
-        User reqUser=userService.findUserByJwt(jwt);
-        User user=userService.changeRole(userId, newRole);
-        return user;
+        userService.findUserByJwt(jwt);
+        return userService.changeRole(userId, newRole);
     }
-
-
-
 }

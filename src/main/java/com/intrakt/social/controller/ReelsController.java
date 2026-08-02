@@ -13,29 +13,28 @@ import java.util.List;
 @RestController
 public class ReelsController {
 
-    @Autowired
-    private ReelsService reelsService;
+    private final ReelsService reelsService;
+    private final UserService userService;
 
-    private UserService userService;
+    @Autowired
+    public ReelsController(ReelsService reelsService, UserService userService) {
+        this.reelsService = reelsService;
+        this.userService = userService;
+    }
 
     @PostMapping("/api/reels")
     public Reels createReels(@RequestBody Reels reels, @RequestHeader("Authorization") String jwt) throws UserException {
         User user = userService.findUserByJwt(jwt);
-        Reels createdReels = reelsService.createReel(reels,user);
-
-        return createdReels;
+        return reelsService.createReel(reels,user);
     }
 
     @GetMapping("/api/reels")
     public List<Reels> findAllReels(){
-        List<Reels> reels = reelsService.findAllReels();
-        return reels;
+        return reelsService.findAllReels();
     }
 
     @GetMapping("/api/reels/user/{userId}")
     public List<Reels> findUsersReels(@PathVariable("userId") Integer userId) throws Exception {
-        List<Reels> reels = reelsService.findUsersReel(userId);
-        return reels;
+        return reelsService.findUsersReel(userId);
     }
-
 }

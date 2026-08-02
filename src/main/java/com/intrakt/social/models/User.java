@@ -1,8 +1,6 @@
 package com.intrakt.social.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,20 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-//note:@JsonIgnore- this is used to avoid infinite ciruclar reference in api response.it directly ignores
-//the particular field to be shown in response
-//https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
-//@Json Managed reference and @Json back reference
-
-
-
-//in user---> we have savedposts, in post----> we have users who saved posts
-// so, we use jointable user_savedpost for list<post> in user model,,,,--->owning side
-//now, we don;t need to create anther jointable savedpost_user in the post model for users
-//so,in post model,,,,we use:----->inverse side
-//@ManyToMany(mappedBy = "savedposts")
-//private List<User> users;
-
 
 @Entity
 @Table(name="users")

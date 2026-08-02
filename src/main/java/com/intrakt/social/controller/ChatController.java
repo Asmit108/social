@@ -14,25 +14,26 @@ import java.util.List;
 @RestController
 public class ChatController {
 
-    @Autowired
-    private ChatService chatService;
+    private final ChatService chatService;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public ChatController(ChatService chatService, UserService userService) {
+        this.chatService = chatService;
+        this.userService = userService;
+    }
 
     @PostMapping("/api/chats")
     public Chat createChat(@RequestBody CreateChatRequest req,
                            @RequestHeader("Authorization") String jwt) throws Exception {
         User reqUser = userService.findUserByJwt(jwt);
         User user2 = userService.findUserById(req.getUserId());
-        Chat chat = chatService.createChat(user2,reqUser);
-        return chat;
+        return chatService.createChat(user2,reqUser);
     }
 
     @GetMapping("/api/chats")
     public List<Chat> findUsersChat(@RequestHeader("Authorization") String jwt) throws UserException {
         User user = userService.findUserByJwt(jwt);
-        List<Chat> chats = chatService.findUsersChat(user.getId());
-        return chats;
+        return chatService.findUsersChat(user.getId());
     }
 }

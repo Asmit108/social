@@ -15,11 +15,14 @@ import java.util.List;
 @RestController
 public class PostController {
 
-    @Autowired
-    PostService postService;
+    private final PostService postService;
+    private final UserService userService;
 
     @Autowired
-    UserService userService;
+    public PostController(PostService postService, UserService userService) {
+        this.postService = postService;
+        this.userService = userService;
+    }
 
     @PostMapping("/api/posts/user")
     public ResponseEntity<Post> createPost(@RequestHeader("Authorization") String jwt,@RequestBody Post post) throws Exception {
@@ -50,7 +53,7 @@ public class PostController {
     }
 
     @GetMapping("/api/posts")
-    public ResponseEntity<List<Post>> findAllPosts() throws Exception {
+    public ResponseEntity<List<Post>> findAllPosts() {
         List<Post> posts=postService.findAllPosts();
         return new ResponseEntity<>(posts,HttpStatus.OK);
     }
@@ -68,8 +71,4 @@ public class PostController {
         Post post=postService.likePost(postId, reqUser.getId());
         return new ResponseEntity<>(post,HttpStatus.ACCEPTED);
     }
-
-
-
-
 }

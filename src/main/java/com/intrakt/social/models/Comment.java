@@ -36,7 +36,7 @@ public class Comment {
     @JoinTable(
             name = "comment_likes", // Name of the join table
             joinColumns = @JoinColumn(
-                    name = "comment_id",  // Foreign key column for Post entity
+                    name = "comment_id",  // Foreign key column for Comment entity
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_liked_comment_id",  // Foreign key constraint name
@@ -65,3 +65,8 @@ public class Comment {
     private LocalDateTime createdAt;
 
 }
+//mappedBy can only be used on:
+//
+//@OneToMany
+//@OneToOne
+//@ManyToMany

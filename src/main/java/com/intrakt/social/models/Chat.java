@@ -30,7 +30,7 @@ public class Chat {
     @JoinTable(
             name = "chat_user", // Name of the join table
             joinColumns = @JoinColumn(
-                    name = "chat_id",  // Foreign key column for Post entity
+                    name = "chat_id",  // Foreign key column for Chat entity
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_user_chat_id",  // Foreign key constraint name

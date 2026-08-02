@@ -45,7 +45,7 @@ public class Post {
     )
     private User user;
 
-    @ManyToMany
+    @ManyToMany //we need join table bacuase to follow normalisation
     @JoinTable(
             name = "post_likes", // Name of the join table
             joinColumns = @JoinColumn(

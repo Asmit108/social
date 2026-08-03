@@ -22,14 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CustomeUserDetailsService customUserDetails;
     private final UserRepository userRepository;
 
     @Autowired
-    public AuthController(UserService userService, BCryptPasswordEncoder passwordEncoder,  CustomeUserDetailsService customUserDetails, UserRepository userRepository) {
-        this.userService = userService;
+    public AuthController(BCryptPasswordEncoder passwordEncoder,  CustomeUserDetailsService customUserDetails, UserRepository userRepository) {
         this.passwordEncoder = passwordEncoder;
         this.customUserDetails = customUserDetails;
         this.userRepository = userRepository;

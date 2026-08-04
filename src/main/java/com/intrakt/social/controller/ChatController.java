@@ -7,6 +7,8 @@ import com.intrakt.social.request.CreateChatRequest;
 import com.intrakt.social.service.ChatService;
 import com.intrakt.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,16 +26,16 @@ public class ChatController {
     }
 
     @PostMapping("/api/chats")
-    public Chat createChat(@RequestBody CreateChatRequest req,
-                           @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Chat> createChat(@RequestBody CreateChatRequest req,
+                                          @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         User user2 = userService.findUserById(req.getUserId());
-        return chatService.createChat(user2,reqUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatService.createChat(user2,reqUser));
     }
 
     @GetMapping("/api/chats")
-    public List<Chat> findUsersChat(@RequestHeader("Authorization") String jwt) throws UserException {
+    public ResponseEntity<List<Chat>> findUsersChat(@RequestHeader("Authorization") String jwt) {
         User user = userService.findUserByJwt(jwt);
-        return chatService.findUsersChat(user.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(chatService.findUsersChat(user.getId()));
     }
 }

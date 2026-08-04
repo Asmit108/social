@@ -1,8 +1,10 @@
 package com.intrakt.social.service;
 
+import com.intrakt.social.exceptions.UserException;
 import com.intrakt.social.models.Story;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.StoryRepository;
+import com.intrakt.social.request.StoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class StoryServiceImplementation implements StoryService{
     private UserService userService;
 
     @Override
-    public Story createStory(Story story, User user) {
+    public Story createStory(StoryRequest story, User user) {
         Story createdStory = new Story();
         createdStory.setCaptions((story.getCaptions()));
         createdStory.setImage(story.getImage());
@@ -30,9 +32,8 @@ public class StoryServiceImplementation implements StoryService{
     }
 
     @Override
-    public List<Story> findStoryByUserId(Integer userId) throws Exception {
-        User user = userService.findUserById(userId);
-        List<Story> stories = storyRepository.findByUserId(userId);
-        return stories;
+    public List<Story> findStoryByUserId(Integer userId) {
+        userService.findUserById(userId);
+        return storyRepository.findByUserId(userId);
     }
 }

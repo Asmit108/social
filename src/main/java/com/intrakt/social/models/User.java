@@ -26,8 +26,16 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private String role;
-    private String gender;
+    public enum Role {
+        USER,
+        ADMIN
+    }
+    private Role role;
+    public enum Gender {
+        MALE,
+        FEMALE
+    }
+    private Gender gender;
 
     @ManyToMany
     @JoinTable(

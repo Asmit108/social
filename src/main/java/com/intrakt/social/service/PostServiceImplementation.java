@@ -4,12 +4,16 @@ import com.intrakt.social.models.Post;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.PostRepository;
 import com.intrakt.social.repository.UserRepository;
+import com.intrakt.social.request.PostRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -26,7 +30,7 @@ public class PostServiceImplementation implements PostService {
     UserService userService;
 
     @Override
-    public Post createNewPost(Post post, Integer userId) throws Exception {
+    public Post createNewPost(PostRequest post, Integer userId) {
 
         User user=userService.findUserById(userId);
         Post newPost=new Post();
@@ -40,11 +44,11 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
-    public String deletePost(Integer postId, Integer userId) throws Exception {
+    public String deletePost(Integer postId, Integer userId) {
         Post post=findPostById(postId);
         User user=userService.findUserById(userId);
-        if (post.getUser().getId() != user.getId()) {
-            throw new Exception("you can't delete another user's post");
+        if (!Objects.equals(post.getUser().getId(), user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to delete this post");
         } else {
             postRepository.delete(post);
             return "post deleted successfully";
@@ -52,28 +56,26 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
-    public List<Post> findPostByUserId(Integer userId) throws Exception {
-        List<Post> posts=postRepository.findPostByUserId(userId);
-        return posts;
+    public List<Post> findPostByUserId(Integer userId) {
+        return postRepository.findPostByUserId(userId);
     }
 
     @Override
-    public Post findPostById(Integer postId) throws Exception {
+    public Post findPostById(Integer postId) {
         Optional<Post> opt=postRepository.findById(postId);
         if(opt.isPresent()) {
             return opt.get();
         }
-        throw new Exception("no user found with postid "+postId);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + postId);
     }
 
     @Override
     public List<Post> findAllPosts() {
-        List<Post> posts=postRepository.findAll();
-        return posts;
+        return postRepository.findAll();
     }
 
     @Override
-    public Post savedPost(Integer postId, Integer userId) throws Exception {
+    public Post savedPost(Integer postId, Integer userId) {
         Post post=findPostById(postId);
         User user=userService.findUserById(userId);
         if(user.getSavedPost().contains(post)){
@@ -86,7 +88,7 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
-    public Post likePost(Integer postId, Integer userId) throws Exception {
+    public Post likePost(Integer postId, Integer userId) {
         Post post=findPostById(postId);
         User user=userService.findUserById(userId);
         if (!post.getLiked().contains(user)) {

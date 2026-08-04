@@ -6,7 +6,9 @@ import com.intrakt.social.models.User;
 import com.intrakt.social.repository.CommentRepository;
 import com.intrakt.social.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -27,12 +29,12 @@ public class CommentServiceImplementation implements CommentService {
     private PostRepository postRepository;
 
     @Override
-    public Comment createComment(Comment comment, Integer postId, Integer userId) throws Exception {
+    public Comment createComment(String req, Integer postId, Integer userId) {
         User user = userService.findUserById(userId);
         Post post = postService.findPostById(postId);
         Comment newComment=new Comment();
         newComment.setUser(user);
-        newComment.setContent(comment.getContent());
+        newComment.setContent(req);
         newComment.setCreatedAt(LocalDateTime.now());
         newComment.setUser(user);
         post.getComments().add(newComment);
@@ -43,7 +45,7 @@ public class CommentServiceImplementation implements CommentService {
     }
 
     @Override
-    public Comment likeComment(Integer commentId, Integer userId) throws Exception {
+    public Comment likeComment(Integer commentId, Integer userId) {
         Comment comment = findCommentById(commentId);
         User user = userService.findUserById(userId);
         if(!comment.getLiked().contains(user)){
@@ -57,10 +59,10 @@ public class CommentServiceImplementation implements CommentService {
     }
 
     @Override
-    public Comment findCommentById(Integer commentId) throws Exception {
+    public Comment findCommentById(Integer commentId) {
         Optional<Comment> opt =  commentRepository.findById(commentId);
         if(opt.isEmpty()){
-            throw new Exception("comment not exists");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found");
         }
         return opt.get();
     }

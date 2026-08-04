@@ -3,12 +3,13 @@ package com.intrakt.social.service;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +21,10 @@ public class CustomeUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         User user=userRepository.findByEmail(username);
         if(user==null){
-            throw new UsernameNotFoundException("user not found with email" + username);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with email: " + username);
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();

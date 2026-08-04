@@ -2,6 +2,7 @@ package com.intrakt.social.controller;
 
 import com.intrakt.social.models.Post;
 import com.intrakt.social.models.User;
+import com.intrakt.social.request.PostRequest;
 import com.intrakt.social.response.ApiResponse;
 import com.intrakt.social.service.PostService;
 import com.intrakt.social.service.UserService;
@@ -25,50 +26,50 @@ public class PostController {
     }
 
     @PostMapping("/api/posts/user")
-    public ResponseEntity<Post> createPost(@RequestHeader("Authorization") String jwt,@RequestBody Post post) throws Exception {
+    public ResponseEntity<Post> createPost(@RequestHeader("Authorization") String jwt, @RequestBody PostRequest post) {
         User reqUser = userService.findUserByJwt(jwt);
         Post createdPost= postService.createNewPost(post,reqUser.getId());
-        return new ResponseEntity<>(createdPost, HttpStatus.ACCEPTED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
     @DeleteMapping("/api/posts/{postId}")
-    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         String message=postService.deletePost(postId,reqUser.getId());
         ApiResponse res=new ApiResponse(message,true);
-        return new ResponseEntity<>(res,HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/api/posts/{postId}")
-    public ResponseEntity<Post> findPostById(@PathVariable Integer postId) throws Exception {
+    public ResponseEntity<Post> findPostById(@PathVariable Integer postId) {
         Post post=postService.findPostById(postId);
-        return new ResponseEntity<>(post,HttpStatus.ACCEPTED);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
     @GetMapping("/api/posts/user/{userId}")
-    public ResponseEntity<List<Post>> findUsersPost(@PathVariable Integer userId) throws Exception {
+    public ResponseEntity<List<Post>> findUsersPost(@PathVariable Integer userId) {
 
         List<Post> posts=postService.findPostByUserId(userId);
-        return new ResponseEntity<>(posts,HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
     @GetMapping("/api/posts")
     public ResponseEntity<List<Post>> findAllPosts() {
         List<Post> posts=postService.findAllPosts();
-        return new ResponseEntity<>(posts,HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
     @PutMapping("/api/posts/{postId}")
-    public ResponseEntity<Post> savedPostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Post> savedPostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         Post post=postService.savedPost(postId, reqUser.getId());
-        return new ResponseEntity<>(post,HttpStatus.ACCEPTED);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
     @PutMapping("/api/posts/like/{postId}")
-    public ResponseEntity<Post> likePostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<Post> likePostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         Post post=postService.likePost(postId, reqUser.getId());
-        return new ResponseEntity<>(post,HttpStatus.ACCEPTED);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 }

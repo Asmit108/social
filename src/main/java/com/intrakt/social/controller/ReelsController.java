@@ -1,11 +1,13 @@
 package com.intrakt.social.controller;
 
-import com.intrakt.social.exceptions.UserException;
 import com.intrakt.social.models.Reels;
 import com.intrakt.social.models.User;
+import com.intrakt.social.request.ReelsRequest;
 import com.intrakt.social.service.ReelsService;
 import com.intrakt.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,18 +25,18 @@ public class ReelsController {
     }
 
     @PostMapping("/api/reels")
-    public Reels createReels(@RequestBody Reels reels, @RequestHeader("Authorization") String jwt) throws UserException {
+    public ResponseEntity<Reels> createReels(@RequestBody ReelsRequest reels, @RequestHeader("Authorization") String jwt) {
         User user = userService.findUserByJwt(jwt);
-        return reelsService.createReel(reels,user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reelsService.createReel(reels,user));
     }
 
     @GetMapping("/api/reels")
-    public List<Reels> findAllReels(){
-        return reelsService.findAllReels();
+    public ResponseEntity<List<Reels>> findAllReels(){
+        return ResponseEntity.status(HttpStatus.OK).body(reelsService.findAllReels());
     }
 
     @GetMapping("/api/reels/user/{userId}")
-    public List<Reels> findUsersReels(@PathVariable("userId") Integer userId) throws Exception {
-        return reelsService.findUsersReel(userId);
+    public ResponseEntity<List<Reels>> findUsersReels(@PathVariable("userId") Integer userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(reelsService.findUsersReel(userId));
     }
 }

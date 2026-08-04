@@ -4,7 +4,9 @@ import com.intrakt.social.models.Chat;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,10 +33,10 @@ public class ChatServiceImplementation implements ChatService {
     }
 
     @Override
-    public Chat findChatById(Integer chatId) throws Exception {
+    public Chat findChatById(Integer chatId) {
         Optional<Chat> opt=chatRepository.findById(chatId);
         if(opt.isEmpty()){
-            throw new Exception("chat not found with id-" + chatId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
         }
 
         return opt.get();
@@ -42,7 +44,6 @@ public class ChatServiceImplementation implements ChatService {
 
     @Override
     public List<Chat> findUsersChat(Integer userId) {
-        List<Chat> chats = chatRepository.findByUsersId(userId);
-        return chats;
+        return chatRepository.findByUsersId(userId);
     }
 }

@@ -72,4 +72,10 @@ public class PostController {
         Post post=postService.likePost(postId, reqUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
+
+    @DeleteMapping("/api/admim/posts/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
+        postService.deletePostById(postId);
+        return ResponseEntity.status(HttpStatus.OK).body("Post deleted successfully");
+    }
 }

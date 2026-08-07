@@ -7,7 +7,9 @@ import com.intrakt.social.repository.ChatRepository;
 import com.intrakt.social.repository.MessageRepository;
 import com.intrakt.social.request.MessageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,5 +45,14 @@ public class MessageServiceImplementation implements MessageService {
     public List<Message> findChatsMessages(Integer chatId) {
         chatService.findChatById(chatId);
         return messageRepository.findByChatId(chatId);
+    }
+
+    @Override
+    public void deleteMessageById(Integer messageId) {
+        Message message = messageRepository.findMessgeById(messageId);
+        if (message == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
+        }
+        messageRepository.deleteById(messageId);
     }
 }

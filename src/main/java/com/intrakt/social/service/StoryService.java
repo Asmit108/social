@@ -12,4 +12,5 @@ public interface StoryService {
 
     public List<Story> findStoryByUserId(Integer userId);
 
+    public void deleteStoryById(Integer storyId);
 }

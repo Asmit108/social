@@ -66,4 +66,10 @@ public class CommentServiceImplementation implements CommentService {
         }
         return opt.get();
     }
+
+    @Override
+    public void deleteCommentById(Integer commentId) {
+        findCommentById(commentId);
+        commentRepository.deleteById(commentId);
+    }
 }

@@ -1,7 +1,5 @@
 package com.intrakt.social.config;
 
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -41,18 +39,6 @@ public class AppConfig {
     }
 
     /**
-     * Configures and creates a ChatClient bean for AI service integration.
-     * Used to communicate with OpenAI API for symptom analysis.
-     *
-     * @param chatModel the OpenAiChatModel providing AI capabilities
-     * @return ChatClient configured with the provided model
-     */
-    @Bean
-    public ChatClient chatClient(OpenAiChatModel chatModel) {
-        return ChatClient.builder(chatModel).build();
-    }
-
-    /**
      * Configures the security filter chain for HTTP requests.
      * Sets up:
      * - Stateless session management (JWT-based, no server sessions)
@@ -77,8 +63,10 @@ public class AppConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow public access to authentication and API documentation
                         .requestMatchers("/auth/**", "/swagger-ui/**",
-                                "/v3/api-docs/**").permitAll()
+                                "/v3/**").permitAll()
                         // Require authentication for all other endpoints
+                        // Checks role in authentication from spring security
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
 

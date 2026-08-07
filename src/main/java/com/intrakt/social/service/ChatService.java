@@ -12,4 +12,6 @@ public interface ChatService {
     public Chat findChatById(Integer chatId);
 
     public List<Chat> findUsersChat(Integer userId);
+
+    public void deleteChatById(Integer chatId);
 }

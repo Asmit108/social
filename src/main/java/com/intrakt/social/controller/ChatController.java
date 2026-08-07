@@ -1,6 +1,5 @@
 package com.intrakt.social.controller;
 
-import com.intrakt.social.exceptions.UserException;
 import com.intrakt.social.models.Chat;
 import com.intrakt.social.models.User;
 import com.intrakt.social.request.CreateChatRequest;
@@ -37,5 +36,11 @@ public class ChatController {
     public ResponseEntity<List<Chat>> findUsersChat(@RequestHeader("Authorization") String jwt) {
         User user = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(chatService.findUsersChat(user.getId()));
+    }
+
+    @DeleteMapping("/api/admin/chats/{chatId}")
+    public ResponseEntity<String> deleteChat(@PathVariable("chatId") Integer chatId) {
+        chatService.deleteChatById(chatId);
+        return ResponseEntity.status(HttpStatus.OK).body("chat deleted sucessfully");
     }
 }

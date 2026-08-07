@@ -11,4 +11,6 @@ public interface ReelsRepository extends JpaRepository<Reels,Integer> {
 
     @Query("SELECT r FROM Reels r")
     public List<Reels> findAllReels();
+
+    public Reels findReelsById(Integer reelsId);
 }

@@ -35,4 +35,10 @@ public class StoryController {
         userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(storyService.findStoryByUserId(userId));
     }
+
+    @DeleteMapping("/api/admin/story/{storyId}")
+    public ResponseEntity<String> deleteStory(@PathVariable("storyId") Integer storyId) {
+        storyService.deleteStoryById(storyId);
+        return ResponseEntity.status(HttpStatus.OK).body("Story deleted successfully");
+    }
 }

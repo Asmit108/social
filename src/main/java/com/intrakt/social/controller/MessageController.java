@@ -31,8 +31,13 @@ public class MessageController {
     }
 
     @GetMapping("/api/messages/chat/{chatId}")
-    public ResponseEntity<List<Message>> findChatMessages(@PathVariable("chatId") Integer chatId, @RequestHeader("Authorization") String jwt) {
-        userService.findUserByJwt(jwt);
+    public ResponseEntity<List<Message>> findChatMessages(@PathVariable("chatId") Integer chatId) {
         return ResponseEntity.status(HttpStatus.OK).body(messageService.findChatsMessages(chatId));
+    }
+
+    @DeleteMapping("/api/admin/messages/{messageId}")
+    public ResponseEntity<String> deleteMessage(@PathVariable("messageId") Integer messageId) {
+        messageService.deleteMessageById(messageId);
+        return ResponseEntity.status(HttpStatus.OK).body("Message deleted successfully");
     }
 }

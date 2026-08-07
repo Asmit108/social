@@ -10,4 +10,5 @@ public interface MessageService {
 
     public Message createMessage(User user, Integer chatId, MessageRequest message) ;
     public List<Message> findChatsMessages(Integer chatId) ;
+    public void deleteMessageById(Integer messageId);
 }

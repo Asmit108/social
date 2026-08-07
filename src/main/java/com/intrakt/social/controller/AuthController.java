@@ -50,8 +50,14 @@ public class AuthController {
         newUser.setFirstName(registerRequest.getFirstName());
         newUser.setLastName(registerRequest.getLastName());
         newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        newUser.setRole(registerRequest.getRole());
         newUser.setGender(registerRequest.getGender());
+        // Parse and set role (normalize to lowercase)
+        User.Role role = registerRequest.getRole();
+        if (User.Role.ADMIN == role) {
+            newUser.setRole(User.Role.ADMIN);
+        } else {
+            newUser.setRole(User.Role.USER);
+        }
         User savedUser=userRepository.save(newUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser);

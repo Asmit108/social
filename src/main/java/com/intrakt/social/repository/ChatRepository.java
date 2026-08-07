@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
     public List<Chat> findByUsersId(Integer userId);

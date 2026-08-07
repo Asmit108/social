@@ -13,4 +13,6 @@ public interface ReelsService {
     public List<Reels> findAllReels();
 
     public List<Reels> findUsersReel(Integer userId);
+
+    public void deleteReelsById(Integer reelsId);
 }

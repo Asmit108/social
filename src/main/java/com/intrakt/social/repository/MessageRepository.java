@@ -9,4 +9,5 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
     public List<Message> findByChatId(Integer chatId);
 
+    public Message findMessgeById(Integer messageId);
 }

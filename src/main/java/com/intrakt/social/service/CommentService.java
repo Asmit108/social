@@ -6,5 +6,5 @@ public interface CommentService {
     public Comment createComment(String req, Integer postId, Integer userId);
     public Comment likeComment(Integer commentId,Integer userId);
     public Comment findCommentById(Integer commentId);
-
+    public void deleteCommentById(Integer commentId);
 }

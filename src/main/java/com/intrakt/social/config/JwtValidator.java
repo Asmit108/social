@@ -66,9 +66,20 @@ public class JwtValidator extends OncePerRequestFilter {
         }
 
         // Extract role from request header
-        User.Role role = User.Role.valueOf(request.getHeader(JwtConstant.ROLE_HEADER));
+        String roleHeader = request.getHeader(JwtConstant.ROLE_HEADER);
 
-        // For authentication endpoints, validate that role is either PATIENT or DOCTOR
+        if (roleHeader == null) {
+            throw new BadCredentialsException("Role header is missing");
+        }
+
+        User.Role role;
+        try {
+            role = User.Role.valueOf(roleHeader);
+        } catch (IllegalArgumentException ex) {
+            throw new BadCredentialsException("Invalid role");
+        }
+
+        // For authentication endpoints, no need to validate JWT token
         if (path.contains("/auth/")) {
             filterChain.doFilter(request, response);
             return;
@@ -86,9 +97,13 @@ public class JwtValidator extends OncePerRequestFilter {
             // Extract email from JWT token
             String email = jwtProvider.getEmailFromJwtToken(jwt);
             User user = userService.findUserByEmail(email);
-            if(!Objects.equals(user.getRole(), role)) {
-                throw new Exception("Role passed in header is wrong");
+            if(user == null){
+                throw new BadCredentialsException("Invalid JWT token: user not found");
             }
+            if(!Objects.equals(user.getRole(), role)) {
+                throw new BadCredentialsException("Role passed in header is wrong");
+            }
+
             // Create authorities list with user role
             Collection<? extends GrantedAuthority> authorities =
                     List.of(new SimpleGrantedAuthority("ROLE_" + role));
@@ -100,13 +115,10 @@ public class JwtValidator extends OncePerRequestFilter {
             // Set authentication in security context for this request
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        } catch (BadCredentialsException e) {
+            throw e;
         } catch (Exception e) {
-            if ("Role passed in header is wrong".equals(e.getMessage())) {
-                throw new RuntimeException("Role passed in header is wrong");
-            }
-            else{
-                throw new BadCredentialsException("Invalid JWT token");
-            }
+            throw new BadCredentialsException("JWT token validation failed", e);
         }
 
         // Continue the request to the next filter in the chain

@@ -14,7 +14,6 @@ import java.util.Optional;
 @Service
 public class ChatServiceImplementation implements ChatService {
 
-
     @Autowired
     private ChatRepository chatRepository;
 
@@ -45,5 +44,11 @@ public class ChatServiceImplementation implements ChatService {
     @Override
     public List<Chat> findUsersChat(Integer userId) {
         return chatRepository.findByUsersId(userId);
+    }
+
+    @Override
+    public void deleteChatById(Integer chatId) {
+        findChatById(chatId);
+        chatRepository.deleteById(chatId);
     }
 }

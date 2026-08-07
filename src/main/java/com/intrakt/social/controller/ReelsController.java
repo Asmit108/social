@@ -39,4 +39,10 @@ public class ReelsController {
     public ResponseEntity<List<Reels>> findUsersReels(@PathVariable("userId") Integer userId) {
         return ResponseEntity.status(HttpStatus.OK).body(reelsService.findUsersReel(userId));
     }
+
+    @DeleteMapping("/api/admin/reels/{reelsId}")
+    public ResponseEntity<String> deleteReels(@PathVariable("reelsId") Integer reelsId) {
+        reelsService.deleteReelsById(reelsId);
+        return ResponseEntity.status(HttpStatus.OK).body("Reels deleted successfully");
+    }
 }

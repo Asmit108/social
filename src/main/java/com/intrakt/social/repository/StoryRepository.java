@@ -8,4 +8,6 @@ import java.util.List;
 public interface StoryRepository extends JpaRepository<Story,Integer> {
 
     public List<Story> findByUserId(Integer userId);
+
+    public Story findByStoryId(Integer storyId);
 }

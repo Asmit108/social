@@ -99,4 +99,10 @@ public class PostServiceImplementation implements PostService {
         postRepository.save(post);
         return post;
     }
+
+    @Override
+    public void deletePostById(Integer postId) {
+        findPostById(postId);
+        postRepository.deleteById(postId);
+    }
 }

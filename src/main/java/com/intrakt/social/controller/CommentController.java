@@ -34,4 +34,10 @@ public class CommentController {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(commentService.likeComment(commentId,user.getId()));
     }
+
+    @DeleteMapping("/api/admin/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable("commentId") Integer commentId) {
+        commentService.deleteCommentById(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body("Comment deleted successfully");
+    }
 }

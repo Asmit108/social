@@ -40,7 +40,7 @@ public class StoryServiceImplementation implements StoryService{
 
     @Override
     public void deleteStoryById(Integer storyId) {
-        Story story = storyRepository.findByStoryId(storyId);
+        Story story = storyRepository.findStoryById(storyId);
         if (story == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Story not found");
         }

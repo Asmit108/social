@@ -94,8 +94,8 @@ public class AppConfig {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
 
-            // Allow requests from frontend (localhost:3000)
-            cfg.setAllowedOrigins(List.of("http://localhost:3000")); // no trailing slash
+            // Allow requests from frontend (localhost:4000)
+            cfg.setAllowedOrigins(List.of("http://localhost:4000")); // no trailing slash
 
             // Allow standard HTTP methods
             cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));

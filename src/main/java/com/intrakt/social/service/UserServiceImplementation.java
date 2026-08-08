@@ -15,17 +15,13 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
-    @Override
-    public User registerUser(User user) {
-        User newUser=new User();
-        newUser.setEmail(user.getEmail());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setPassword(user.getPassword());
-        return userRepository.save(newUser);
+    @Autowired
+    public UserServiceImplementation(UserRepository userRepository, JwtProvider jwtProvider) {
+        this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
@@ -88,14 +84,14 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User findUserByJwt(String jwt) {
-        String email = JwtProvider.getEmailFromJwtToken(jwt);
+        String email = jwtProvider.getEmailFromJwtToken(jwt);
         return userRepository.findByEmail(email);
     }
 
     @Override
     public User changeRole(Integer userId, String newRole) {
         User user = findUserById(userId);
-        user.setRole(newRole);
+        user.setRole(User.Role.valueOf(newRole));
         user = userRepository.save(user);
         return user;
     }

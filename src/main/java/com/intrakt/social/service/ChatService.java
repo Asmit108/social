@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface ChatService {
 
-    public Chat createChat(User reqUser,User user2 );
+    Chat createChat(User reqUser,User user2 );
 
-    public Chat findChatById(Integer chatId);
+    Chat findChatById(Integer chatId);
 
-    public List<Chat> findUsersChat(Integer userId);
+    List<Chat> findUsersChat(Integer userId);
 
-    public void deleteChatById(Integer chatId);
+    void deleteChatById(Integer chatId);
 }

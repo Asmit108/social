@@ -15,11 +15,14 @@ import java.util.List;
 @Service
 public class StoryServiceImplementation implements StoryService{
 
-    @Autowired
-    private StoryRepository storyRepository;
+    private final StoryRepository storyRepository;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public StoryServiceImplementation(StoryRepository storyRepository, UserService userService) {
+        this.storyRepository = storyRepository;
+        this.userService = userService;
+    }
 
     @Override
     public Story createStory(StoryRequest story, User user) {

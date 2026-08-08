@@ -9,10 +9,10 @@ import java.util.List;
 
 @Repository
 public interface ReelsRepository extends JpaRepository<Reels,Integer> {
-    public List<Reels> findByUserId(Integer userId);
+    List<Reels> findByUserId(Integer userId);
 
     @Query("SELECT r FROM Reels r")
-    public List<Reels> findAllReels();
+    List<Reels> findAllReels();
 
-    public Reels findReelsById(Integer reelsId);
+    Reels findReelsById(Integer reelsId);
 }

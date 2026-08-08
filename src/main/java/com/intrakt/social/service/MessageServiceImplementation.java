@@ -17,14 +17,16 @@ import java.util.List;
 @Service
 public class MessageServiceImplementation implements MessageService {
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
+    private final ChatService chatService;
+    private final ChatRepository chatRepository;
 
     @Autowired
-    private ChatService chatService;
-
-    @Autowired
-    private ChatRepository chatRepository;
+    public MessageServiceImplementation(MessageRepository messageRepository, ChatService chatService, ChatRepository chatRepository) {
+        this.messageRepository = messageRepository;
+        this.chatService = chatService;
+        this.chatRepository = chatRepository;
+    }
 
     @Override
     public Message createMessage(User user, Integer chatId, MessageRequest messageRequest) {

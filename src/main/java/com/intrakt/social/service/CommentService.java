@@ -3,8 +3,8 @@ package com.intrakt.social.service;
 import com.intrakt.social.models.Comment;
 
 public interface CommentService {
-    public Comment createComment(String req, Integer postId, Integer userId);
-    public Comment likeComment(Integer commentId,Integer userId);
-    public Comment findCommentById(Integer commentId);
-    public void deleteCommentById(Integer commentId);
+    Comment createComment(String req, Integer postId, Integer userId);
+    Comment likeComment(Integer commentId,Integer userId);
+    Comment findCommentById(Integer commentId);
+    void deleteCommentById(Integer commentId);
 }

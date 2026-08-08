@@ -7,12 +7,13 @@ import java.util.List;
 
 public interface PostService {
 
-    public Post createNewPost(PostRequest post, Integer userId);
-    public String deletePost(Integer postId, Integer userId);
-    public List<Post> findPostByUserId(Integer userId);
-    public Post findPostById(Integer postId);
-    public List<Post> findAllPosts();
-    public Post savedPost(Integer postId, Integer userId);
-    public Post likePost(Integer postId,Integer userId);
-    public void deletePostById(Integer postId);
+    Post createNewPost(PostRequest post, Integer userId);
+    String deletePost(Integer postId, Integer userId);
+    List<Post> findPostByUserId(Integer userId);
+    Post findPostById(Integer postId);
+    List<Post> findAllPosts();
+    Post savedPost(Integer postId, Integer userId);
+    Post likePost(Integer postId,Integer userId);
+    void deletePostById(Integer postId);
+    List<Post> getTopPosts();
 }

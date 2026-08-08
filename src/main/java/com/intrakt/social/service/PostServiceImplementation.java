@@ -5,29 +5,27 @@ import com.intrakt.social.models.User;
 import com.intrakt.social.repository.PostRepository;
 import com.intrakt.social.repository.UserRepository;
 import com.intrakt.social.request.PostRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
 @Service
 public class PostServiceImplementation implements PostService {
 
-    @Autowired
-    PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    UserService userService;
+    public PostServiceImplementation(PostRepository postRepository, UserRepository userRepository, UserService userService) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @Override
     public Post createNewPost(PostRequest post, Integer userId) {
@@ -104,5 +102,10 @@ public class PostServiceImplementation implements PostService {
     public void deletePostById(Integer postId) {
         findPostById(postId);
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public List<Post> getTopPosts() {
+        return postRepository.getTopPosts();
     }
 }

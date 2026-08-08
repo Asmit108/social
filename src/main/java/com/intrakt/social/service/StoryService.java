@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface StoryService {
 
-    public Story createStory(StoryRequest story, User user);
+    Story createStory(StoryRequest story, User user);
 
-    public List<Story> findStoryByUserId(Integer userId);
+    List<Story> findStoryByUserId(Integer userId);
 
-    public void deleteStoryById(Integer storyId);
+    void deleteStoryById(Integer storyId);
 }

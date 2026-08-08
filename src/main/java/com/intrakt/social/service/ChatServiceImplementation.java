@@ -14,8 +14,12 @@ import java.util.Optional;
 @Service
 public class ChatServiceImplementation implements ChatService {
 
+    private final ChatRepository chatRepository;
+
     @Autowired
-    private ChatRepository chatRepository;
+    public ChatServiceImplementation(ChatRepository chatRepository) {
+        this.chatRepository = chatRepository;
+    }
 
     @Override
     public Chat createChat(User reqUser, User user2) {

@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ReelsService {
 
-    public Reels createReel(ReelsRequest reel, User user);
+    Reels createReel(ReelsRequest reel, User user);
 
-    public List<Reels> findAllReels();
+    List<Reels> findAllReels();
 
-    public List<Reels> findUsersReel(Integer userId);
+    List<Reels> findUsersReel(Integer userId);
 
-    public void deleteReelsById(Integer reelsId);
+    void deleteReelsById(Integer reelsId);
 }

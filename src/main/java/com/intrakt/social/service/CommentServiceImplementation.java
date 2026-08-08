@@ -16,17 +16,18 @@ import java.util.Optional;
 @Service
 public class CommentServiceImplementation implements CommentService {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
+    private final UserService userService;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private PostRepository postRepository;
+    public CommentServiceImplementation(PostService postService, UserService userService, CommentRepository commentRepository, PostRepository postRepository) {
+        this.postService = postService;
+        this.userService = userService;
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+    }
 
     @Override
     public Comment createComment(String req, Integer postId, Integer userId) {

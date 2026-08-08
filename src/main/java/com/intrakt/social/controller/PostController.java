@@ -73,7 +73,13 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
-    @DeleteMapping("/api/admim/posts/{postId}")
+    @GetMapping("/api/posts/most-liked")
+    public ResponseEntity<List<Post>> getMostLikedPost() {
+        List<Post> post = postService.getTopPosts();
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+
+    @DeleteMapping("/api/admin/posts/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
         postService.deletePostById(postId);
         return ResponseEntity.status(HttpStatus.OK).body("Post deleted successfully");

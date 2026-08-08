@@ -14,11 +14,14 @@ import java.util.List;
 @Service
 public class ReelsServiceImplementation implements ReelsService {
 
-    @Autowired
-    private ReelsRepository reelsRepository;
+    private final ReelsRepository reelsRepository;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public ReelsServiceImplementation(ReelsRepository reelsRepository, UserService userService) {
+        this.reelsRepository = reelsRepository;
+        this.userService = userService;
+    }
 
     @Override
     public Reels createReel(ReelsRequest reel, User user) {

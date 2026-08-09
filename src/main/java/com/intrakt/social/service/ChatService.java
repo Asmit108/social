@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ChatService {
 
-    Chat createChat(User reqUser,User user2 );
+    Chat createChat(Integer userId1,Integer userId2);
 
     Chat findChatById(Integer chatId);
 

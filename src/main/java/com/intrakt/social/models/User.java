@@ -45,7 +45,7 @@ public class User {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_user_follower_id",
-                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE"
+                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
                     )
             ),
             inverseJoinColumns = @JoinColumn(
@@ -53,7 +53,7 @@ public class User {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_follower_id",
-                            foreignKeyDefinition = "FOREIGN KEY (follower_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE"
+                            foreignKeyDefinition = "FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE"
                     )
             )
     )
@@ -67,7 +67,7 @@ public class User {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_user_follwing_id",
-                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE"
+                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
                     )
             ),
             inverseJoinColumns = @JoinColumn(
@@ -75,7 +75,7 @@ public class User {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_following_id",
-                            foreignKeyDefinition = "FOREIGN KEY (following_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE"
+                            foreignKeyDefinition = "FOREIGN KEY (following_id) REFERENCES users(id) ON DELETE CASCADE"
                     )
             )
     )
@@ -89,7 +89,7 @@ public class User {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_user_saved_id",
-                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE"
+                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
                     )
             ),
             inverseJoinColumns = @JoinColumn(
@@ -97,7 +97,7 @@ public class User {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_saved_post_id",
-                            foreignKeyDefinition = "FOREIGN KEY (post_id) REFERENCES post(id) ON UPDATE CASCADE ON DELETE CASCADE"
+                            foreignKeyDefinition = "FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE"
                     )
             )
     )

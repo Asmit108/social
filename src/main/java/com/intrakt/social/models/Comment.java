@@ -40,7 +40,7 @@ public class Comment {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_liked_comment_id",
-                            foreignKeyDefinition = "FOREIGN KEY (comment_id) REFERENCES comment(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
+                            foreignKeyDefinition = "FOREIGN KEY (comment_id) REFERENCES comment(id) ON DELETE CASCADE" // DB-level cascade on delete
                     )
             ),
             inverseJoinColumns = @JoinColumn(
@@ -48,7 +48,7 @@ public class Comment {
                     referencedColumnName = "id",
                     foreignKey = @ForeignKey(
                             name = "fk_liking_comment_user_id",
-                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
+                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" // DB-level cascade on delete
                     )
             )
     )
@@ -58,7 +58,7 @@ public class Comment {
     @JoinColumn(
             name = "post_id",
             referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_commented_post_id", foreignKeyDefinition = "FOREIGN KEY (post_id) REFERENCES post(id) ON UPDATE CASCADE ON DELETE CASCADE") // DB-level cascade on delete
+            foreignKey = @ForeignKey(name = "fk_commented_post_id", foreignKeyDefinition = "FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE") // DB-level cascade on delete
     )
     private Post post;
 

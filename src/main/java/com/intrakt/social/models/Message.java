@@ -24,21 +24,11 @@ public class Message {
 
     private String image;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "user_id",
-            referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_create_message_user_id", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE") // DB-level cascade on delete
-    )
-    private User user;
+    private Integer senderId;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "chat_id",
-            referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_create_chat_id", foreignKeyDefinition = "FOREIGN KEY (chat_id) REFERENCES chat(id) ON DELETE CASCADE ON UPDATE CASCADE") // DB-level cascade on delete
-    )
-    private Chat chat;
+    private Integer receiverId;
+
+    private Integer chatId;
 
     private LocalDateTime timestamp;
 }

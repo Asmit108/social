@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MessageService {
 
-    Message createMessage(User user, Integer chatId, MessageRequest message) ;
+    Message createMessage(Integer userId, Integer chatId, MessageRequest message) ;
     List<Message> findChatsMessages(Integer chatId) ;
     void deleteMessageById(Integer messageId);
 }

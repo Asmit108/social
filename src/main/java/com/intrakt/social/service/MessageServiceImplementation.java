@@ -29,16 +29,21 @@ public class MessageServiceImplementation implements MessageService {
     }
 
     @Override
-    public Message createMessage(User user, Integer chatId, MessageRequest messageRequest) {
+    public Message createMessage(Integer userId, Integer chatId, MessageRequest messageRequest) {
         Message message = new Message();
         Chat chat = chatService.findChatById(chatId);
-        message.setChat(chat);
-        message.setUser(user);
+        message.setChatId(chatId);
+        message.setSenderId(userId);
+        if(chat.getUserId1().equals(userId)) {
+            message.setReceiverId(chat.getUserId2());
+        } else if(chat.getUserId2().equals(userId)) {
+            message.setReceiverId(chat.getUserId1());
+        }
         message.setContent(messageRequest.getContent());
         message.setImage(messageRequest.getImage());
         message.setTimestamp(LocalDateTime.now());
         Message savedMessage = messageRepository.save(message);
-        chat.getMessages().add(savedMessage);
+        chat.getMessageIds().add(savedMessage.getId());
         chatRepository.save(chat);
         return savedMessage;
     }
@@ -55,6 +60,8 @@ public class MessageServiceImplementation implements MessageService {
         if (message == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
         }
+        Chat chat = chatService.findChatById(message.getChatId());
+        chat.getMessageIds().remove(messageId);
         messageRepository.deleteById(messageId);
     }
 }

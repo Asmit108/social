@@ -28,7 +28,7 @@ public class MessageController {
     @PostMapping("/messages/chat/{chatId}")
     public ResponseEntity<Message> createMessage(@PathVariable("chatId") Integer chatId, @RequestBody MessageRequest message, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
-        return ResponseEntity.status(HttpStatus.CREATED).body(messageService.createMessage(reqUser,chatId,message));
+        return ResponseEntity.status(HttpStatus.CREATED).body(messageService.createMessage(reqUser.getId(),chatId,message));
     }
 
     @GetMapping("/messages/chat/{chatId}")

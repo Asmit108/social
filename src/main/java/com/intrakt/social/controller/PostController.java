@@ -29,15 +29,15 @@ public class PostController {
     @PostMapping("/posts/user")
     public ResponseEntity<Post> createPost(@RequestHeader("Authorization") String jwt, @RequestBody PostRequest post) {
         User reqUser = userService.findUserByJwt(jwt);
-        Post createdPost= postService.createNewPost(post,reqUser.getId());
+        Post createdPost = postService.createNewPost(post,reqUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse> deleteOwnPost(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
-        String message=postService.deleteOwnPost(postId,reqUser.getId());
-        ApiResponse res=new ApiResponse(message,true);
+        String message = postService.deleteOwnPost(postId,reqUser.getId());
+        ApiResponse res = new ApiResponse(message,true);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 

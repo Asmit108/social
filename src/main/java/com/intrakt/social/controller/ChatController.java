@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -30,7 +31,10 @@ public class ChatController {
                                           @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         User user2 = userService.findUserById(req.getUserId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(chatService.createChat(user2,reqUser));
+        if(reqUser.equals(user2)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot create chat with yourself");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatService.createChat(user2.getId(),reqUser.getId()));
     }
 
     @GetMapping("/chats")

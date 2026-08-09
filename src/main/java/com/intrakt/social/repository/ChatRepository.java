@@ -12,8 +12,9 @@ import java.util.List;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
-    List<Chat> findByUsersId(Integer userId);
+    @Query("SELECT c FROM Chat c WHERE c.userId1 = :userId OR c.userId2 = :userId")
+    List<Chat> findByUsersId(@Param("userId") Integer userId);
 
-    @Query("SELECT c FROM Chat c WHERE :user Member of c.users AND :reqUser Member of c.users")
-    Chat findChatByUsersId(@Param("user") User user, @Param("reqUser") User reqUser);
+    @Query("SELECT c FROM Chat c WHERE c.userId1 = :userId1 AND c.userId2 = :userId2 OR c.userId1 = :userId2 AND c.userId2 = :userId1")
+    Chat findChatByUsersId(@Param("userId1") Integer userId1, @Param("userId2") Integer userId2);
 }

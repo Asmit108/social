@@ -1,6 +1,7 @@
 package com.intrakt.social.service;
 
 import com.intrakt.social.models.Chat;
+import com.intrakt.social.models.Message;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +16,23 @@ import java.util.Optional;
 public class ChatServiceImplementation implements ChatService {
 
     private final ChatRepository chatRepository;
+    private final MessageService messageService;
 
     @Autowired
-    public ChatServiceImplementation(ChatRepository chatRepository) {
+    public ChatServiceImplementation(ChatRepository chatRepository, MessageService messageService) {
         this.chatRepository = chatRepository;
+        this.messageService = messageService;
     }
 
     @Override
-    public Chat createChat(User reqUser, User user2) {
-         Chat isExist = chatRepository.findChatByUsersId(user2,reqUser);
+    public Chat createChat(Integer userId2, Integer userId1) {
+         Chat isExist = chatRepository.findChatByUsersId(userId1, userId2);
          if(isExist!=null){
              return isExist;
          }
-
          Chat chat = new Chat();
-         chat.getUsers().add(user2);
-         chat.getUsers().add(reqUser);
+         chat.setUserId1(userId1);
+         chat.setUserId2(userId2);
 
          return chatRepository.save(chat);
     }
@@ -53,6 +55,10 @@ public class ChatServiceImplementation implements ChatService {
     @Override
     public void deleteChatById(Integer chatId) {
         findChatById(chatId);
+        List<Message> messages = messageService.findChatsMessages(chatId);
+        for (Message message : messages) {
+            messageService.deleteMessageById(message.getId());
+        }
         chatRepository.deleteById(chatId);
     }
 }

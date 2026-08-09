@@ -32,7 +32,7 @@ public class Post {
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_create_user_id", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE") // DB-level cascade on delete
+            foreignKey = @ForeignKey(name = "fk_create_user_id", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE") // DB-level cascade on delete
     )
     private User user;
 

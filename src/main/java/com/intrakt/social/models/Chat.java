@@ -24,32 +24,11 @@ public class Chat {
 
     private String chatName;
 
-    private String chatImage;
+    private Integer userId1;
 
-    @ManyToMany
-    @JoinTable(
-            name = "chat_user",
-            joinColumns = @JoinColumn(
-                    name = "chat_id",
-                    referencedColumnName = "id",
-                    foreignKey = @ForeignKey(
-                            name = "fk_user_chat_id",
-                            foreignKeyDefinition = "FOREIGN KEY (chat_id) REFERENCES chat(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
-                    )
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "user_id",
-                    referencedColumnName = "id",
-                    foreignKey = @ForeignKey(
-                            name = "fk_chat_user_id",
-                            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE" // DB-level cascade on delete
-                    )
-            )
-    )
-    private List<User> users = new ArrayList<>();
+    private Integer userId2;
 
     private LocalDateTime timestamp;
 
-    @OneToMany(mappedBy = "chat")
-    private List<Message> messages = new ArrayList<>();
+    private List<Integer> messageIds;
 }

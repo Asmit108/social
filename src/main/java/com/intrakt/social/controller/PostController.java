@@ -74,7 +74,7 @@ public class PostController {
     }
 
     @GetMapping("/api/posts/most-liked")
-    public ResponseEntity<List<Post>> getMostLikedPost() {
+    public ResponseEntity<List<Post>> getTopPosts() {
         List<Post> post = postService.getTopPosts();
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }

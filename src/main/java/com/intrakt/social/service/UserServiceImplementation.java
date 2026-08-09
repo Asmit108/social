@@ -6,6 +6,7 @@ import com.intrakt.social.repository.UserRepository;
 import com.intrakt.social.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,11 +16,13 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UserService {
 
+    private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
     @Autowired
-    public UserServiceImplementation(UserRepository userRepository, JwtProvider jwtProvider) {
+    public UserServiceImplementation(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, JwtProvider jwtProvider) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
     }
@@ -70,6 +73,9 @@ public class UserServiceImplementation implements UserService {
         }
         if(user.getEmail()!=null){
             oldUser.setFirstName(user.getFirstName());
+        }
+        if(user.getPassword()!=null){
+            oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         if(user.getGender()!=null){
             oldUser.setGender(user.getGender());

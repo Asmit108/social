@@ -41,5 +41,4 @@ public class Message {
     private Chat chat;
 
     private LocalDateTime timestamp;
-
 }

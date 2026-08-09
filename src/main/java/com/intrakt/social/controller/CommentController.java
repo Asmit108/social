@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api")
 public class CommentController {
 
     private final CommentService commentService;
@@ -21,21 +22,21 @@ public class CommentController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/comments/post/{postId}")
+    @PostMapping("/comments/post/{postId}")
     public ResponseEntity<Comment> createComment(@RequestBody String req, @RequestHeader("Authorization") String jwt,
                                                 @PathVariable("postId") Integer postId) {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(req,postId,user.getId()));
     }
 
-    @PutMapping("/api/comments/like/{commentId}")
+    @PutMapping("/comments/like/{commentId}")
     public ResponseEntity<Comment> likeComment(@RequestHeader("Authorization") String jwt,
                                  @PathVariable("commentId") Integer commentId) {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(commentService.likeComment(commentId,user.getId()));
     }
 
-    @DeleteMapping("/api/admin/comments/{commentId}")
+    @DeleteMapping("/admin/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable("commentId") Integer commentId) {
         commentService.deleteCommentById(commentId);
         return ResponseEntity.status(HttpStatus.OK).body("Comment deleted successfully");

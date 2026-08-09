@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class StoryController {
 
     private final StoryService storyService;
@@ -24,19 +25,18 @@ public class StoryController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/story")
+    @PostMapping("/story")
     public ResponseEntity<Story> createStory(@RequestBody StoryRequest story, @RequestHeader("Authorization") String jwt) {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(storyService.createStory(story,user));
     }
 
-    @GetMapping("/api/story/user/{userId}")
-    public ResponseEntity<List<Story>> findUserStory(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) {
-        userService.findUserByJwt(jwt);
+    @GetMapping("/story/user/{userId}")
+    public ResponseEntity<List<Story>> findUserStory(@PathVariable("userId") Integer userId) {
         return ResponseEntity.status(HttpStatus.OK).body(storyService.findStoryByUserId(userId));
     }
 
-    @DeleteMapping("/api/admin/story/{storyId}")
+    @DeleteMapping("/admin/story/{storyId}")
     public ResponseEntity<String> deleteStory(@PathVariable("storyId") Integer storyId) {
         storyService.deleteStoryById(storyId);
         return ResponseEntity.status(HttpStatus.OK).body("Story deleted successfully");

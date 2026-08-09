@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
@@ -25,61 +26,60 @@ public class PostController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/posts/user")
+    @PostMapping("/posts/user")
     public ResponseEntity<Post> createPost(@RequestHeader("Authorization") String jwt, @RequestBody PostRequest post) {
         User reqUser = userService.findUserByJwt(jwt);
         Post createdPost= postService.createNewPost(post,reqUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
-    @DeleteMapping("/api/posts/{postId}")
-    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<ApiResponse> deleteOwnPost(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
-        String message=postService.deletePost(postId,reqUser.getId());
+        String message=postService.deleteOwnPost(postId,reqUser.getId());
         ApiResponse res=new ApiResponse(message,true);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @GetMapping("/api/posts/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<Post> findPostById(@PathVariable Integer postId) {
         Post post=postService.findPostById(postId);
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
-    @GetMapping("/api/posts/user/{userId}")
+    @GetMapping("/posts/user/{userId}")
     public ResponseEntity<List<Post>> findUsersPost(@PathVariable Integer userId) {
-
         List<Post> posts=postService.findPostByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
-    @GetMapping("/api/posts")
+    @GetMapping("/posts")
     public ResponseEntity<List<Post>> findAllPosts() {
         List<Post> posts=postService.findAllPosts();
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
-    @PutMapping("/api/posts/{postId}")
+    @PutMapping("/posts/{postId}")
     public ResponseEntity<Post> savedPostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         Post post=postService.savedPost(postId, reqUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
-    @PutMapping("/api/posts/like/{postId}")
+    @PutMapping("/posts/like/{postId}")
     public ResponseEntity<Post> likePostHandler(@PathVariable Integer postId, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         Post post=postService.likePost(postId, reqUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
-    @GetMapping("/api/posts/most-liked")
+    @GetMapping("/posts/top")
     public ResponseEntity<List<Post>> getTopPosts() {
         List<Post> post = postService.getTopPosts();
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
-    @DeleteMapping("/api/admin/posts/{postId}")
+    @DeleteMapping("/admin/posts/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
         postService.deletePostById(postId);
         return ResponseEntity.status(HttpStatus.OK).body("Post deleted successfully");

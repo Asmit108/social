@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class ReelsController {
 
     private final ReelsService reelsService;
@@ -24,23 +25,23 @@ public class ReelsController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/reels")
+    @PostMapping("/reels")
     public ResponseEntity<Reels> createReels(@RequestBody ReelsRequest reels, @RequestHeader("Authorization") String jwt) {
         User user = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(reelsService.createReel(reels,user));
     }
 
-    @GetMapping("/api/reels")
+    @GetMapping("/reels")
     public ResponseEntity<List<Reels>> findAllReels(){
         return ResponseEntity.status(HttpStatus.OK).body(reelsService.findAllReels());
     }
 
-    @GetMapping("/api/reels/user/{userId}")
+    @GetMapping("/reels/user/{userId}")
     public ResponseEntity<List<Reels>> findUsersReels(@PathVariable("userId") Integer userId) {
         return ResponseEntity.status(HttpStatus.OK).body(reelsService.findUsersReel(userId));
     }
 
-    @DeleteMapping("/api/admin/reels/{reelsId}")
+    @DeleteMapping("/admin/reels/{reelsId}")
     public ResponseEntity<String> deleteReels(@PathVariable("reelsId") Integer reelsId) {
         reelsService.deleteReelsById(reelsId);
         return ResponseEntity.status(HttpStatus.OK).body("Reels deleted successfully");

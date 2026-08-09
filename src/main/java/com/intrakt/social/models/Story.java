@@ -28,7 +28,7 @@ public class Story {
     )
     private User user;
 
-    private String captions;
+    private String caption;
 
     private String image;
 

@@ -8,7 +8,7 @@ import java.util.List;
 public interface PostService {
 
     Post createNewPost(PostRequest post, Integer userId);
-    String deletePost(Integer postId, Integer userId);
+    String deleteOwnPost(Integer postId, Integer userId);
     List<Post> findPostByUserId(Integer userId);
     Post findPostById(Integer postId);
     List<Post> findAllPosts();

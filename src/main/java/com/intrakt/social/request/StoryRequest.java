@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StoryRequest {
 
-    private String captions;
+    private String caption;
     private String image;
 }

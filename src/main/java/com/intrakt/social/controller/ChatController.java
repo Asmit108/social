@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class ChatController {
 
     private final ChatService chatService;
@@ -24,7 +25,7 @@ public class ChatController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/chats")
+    @PostMapping("/chats")
     public ResponseEntity<Chat> createChat(@RequestBody CreateChatRequest req,
                                           @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
@@ -32,13 +33,13 @@ public class ChatController {
         return ResponseEntity.status(HttpStatus.CREATED).body(chatService.createChat(user2,reqUser));
     }
 
-    @GetMapping("/api/chats")
+    @GetMapping("/chats")
     public ResponseEntity<List<Chat>> findUsersChat(@RequestHeader("Authorization") String jwt) {
         User user = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(chatService.findUsersChat(user.getId()));
     }
 
-    @DeleteMapping("/api/admin/chats/{chatId}")
+    @DeleteMapping("/admin/chats/{chatId}")
     public ResponseEntity<String> deleteChat(@PathVariable("chatId") Integer chatId) {
         chatService.deleteChatById(chatId);
         return ResponseEntity.status(HttpStatus.OK).body("chat deleted sucessfully");

@@ -27,7 +27,7 @@ public class StoryServiceImplementation implements StoryService{
     @Override
     public Story createStory(StoryRequest story, User user) {
         Story createdStory = new Story();
-        createdStory.setCaptions((story.getCaptions()));
+        createdStory.setCaption((story.getCaption()));
         createdStory.setImage(story.getImage());
         createdStory.setUser(user);
         createdStory.setTimestamp(LocalDateTime.now());

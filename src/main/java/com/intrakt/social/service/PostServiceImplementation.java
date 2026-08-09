@@ -42,7 +42,7 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
-    public String deletePost(Integer postId, Integer userId) {
+    public String deleteOwnPost(Integer postId, Integer userId) {
         Post post=findPostById(postId);
         User user=userService.findUserById(userId);
         if (!Objects.equals(post.getUser().getId(), user.getId())) {

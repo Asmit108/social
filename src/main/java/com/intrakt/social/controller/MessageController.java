@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class MessageController {
 
     private final MessageService messageService;
@@ -24,18 +25,18 @@ public class MessageController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/messages/chat/{chatId}")
+    @PostMapping("/messages/chat/{chatId}")
     public ResponseEntity<Message> createMessage(@PathVariable("chatId") Integer chatId, @RequestBody MessageRequest message, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(messageService.createMessage(reqUser,chatId,message));
     }
 
-    @GetMapping("/api/messages/chat/{chatId}")
+    @GetMapping("/messages/chat/{chatId}")
     public ResponseEntity<List<Message>> findChatMessages(@PathVariable("chatId") Integer chatId) {
         return ResponseEntity.status(HttpStatus.OK).body(messageService.findChatsMessages(chatId));
     }
 
-    @DeleteMapping("/api/admin/messages/{messageId}")
+    @DeleteMapping("/admin/messages/{messageId}")
     public ResponseEntity<String> deleteMessage(@PathVariable("messageId") Integer messageId) {
         messageService.deleteMessageById(messageId);
         return ResponseEntity.status(HttpStatus.OK).body("Message deleted successfully");

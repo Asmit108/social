@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -25,50 +26,50 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/api/users")
+    @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
     }
 
-    @GetMapping("/api/users/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) {
         User user=userService.findUserById(userId);
         userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @PutMapping("/api/users")
+    @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String jwt,@RequestBody UserRequest user) {
         User reqUser=userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user,reqUser.getId()));
     }
 
-    @DeleteMapping("/api/users")
+    @DeleteMapping("/users")
     public ResponseEntity<String> removeAccount( @RequestHeader("Authorization") String jwt) {
         User reqUser=userService.findUserByJwt(jwt);
         userRepository.deleteById(reqUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body("user deleted successfully");
     }
 
-    @PutMapping("/api/users/follow/{userId2}")
+    @PutMapping("/users/follow/{userId2}")
     public ResponseEntity<User> followUserHandler(@RequestHeader("Authorization") String jwt,@PathVariable Integer userId2) {
-         User reqUser=userService.findUserByJwt(jwt);
+        User reqUser=userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(userService.followUser(reqUser.getId(),userId2));
     }
 
-    @GetMapping("/api/users/search")
+    @GetMapping("/users/search")
     public ResponseEntity<List<User>> searchUser(@RequestParam("query") String query) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.searchUser(query));
     }
 
-    @GetMapping("/api/users/profile")
-    public ResponseEntity<User> getUserFromToken(@RequestHeader("Authorization") String jwt) {
+    @GetMapping("/users/profile")
+    public ResponseEntity<User> getOwnProfile(@RequestHeader("Authorization") String jwt) {
         User user=userService.findUserByJwt(jwt);
         user.setPassword(null);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @DeleteMapping("/api/admin/users/{userId}")
+    @DeleteMapping("/admin/users/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) {
         Optional<User> user1=userRepository.findById(userId);
         userService.findUserByJwt(jwt);
@@ -79,9 +80,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("user deleted successfully");
     }
 
-    @PutMapping("/api/admin/users/{userId}")
-    public ResponseEntity<User> changeRole(@RequestHeader("Authorization") String jwt,@PathVariable Integer userId, @RequestParam("newRole") String newRole) {
-        userService.findUserByJwt(jwt);
+    @PutMapping("/admin/users/{userId}")
+    public ResponseEntity<User> changeRole(@PathVariable Integer userId, @RequestParam("newRole") String newRole) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.changeRole(userId, newRole));
     }
 }

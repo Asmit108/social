@@ -8,6 +8,7 @@ import com.intrakt.social.repository.MessageRepository;
 import com.intrakt.social.request.MessageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,12 +18,14 @@ import java.util.List;
 @Service
 public class MessageServiceImplementation implements MessageService {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final MessageRepository messageRepository;
     private final ChatService chatService;
     private final ChatRepository chatRepository;
 
     @Autowired
-    public MessageServiceImplementation(MessageRepository messageRepository, ChatService chatService, ChatRepository chatRepository) {
+    public MessageServiceImplementation(SimpMessagingTemplate simpMessagingTemplate, MessageRepository messageRepository, ChatService chatService, ChatRepository chatRepository) {
+        this.messagingTemplate = simpMessagingTemplate;
         this.messageRepository = messageRepository;
         this.chatService = chatService;
         this.chatRepository = chatRepository;
@@ -45,6 +48,13 @@ public class MessageServiceImplementation implements MessageService {
         Message savedMessage = messageRepository.save(message);
         chat.getMessageIds().add(savedMessage.getId());
         chatRepository.save(chat);
+        // 3. Send real-time message
+        messagingTemplate.convertAndSendToUser(
+                savedMessage.getReceiverId().toString(),
+                "/queue/messages",
+                savedMessage
+        );
+
         return savedMessage;
     }
 

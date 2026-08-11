@@ -21,7 +21,6 @@ import java.util.List;
  * - JWT-based authentication and authorization
  * - CORS (Cross-Origin Resource Sharing) policies
  * - Security filters for request validation
- * - AI ChatClient for Gen AI integration
  * - Password encryption using BCrypt
  *
  * @author Health Check Team

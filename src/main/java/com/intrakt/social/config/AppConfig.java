@@ -1,5 +1,6 @@
 package com.intrakt.social.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -61,7 +62,7 @@ public class AppConfig {
                 // Define authorization rules for different endpoints
                 .authorizeHttpRequests(auth -> auth
                         // Allow public access to authentication and API documentation
-                        .requestMatchers("/auth/**", "/swagger-ui/**",
+                        .requestMatchers("/api/auth/**", "/swagger-ui/**",
                                 "/v3/**").permitAll()
                         // Require authentication for all other endpoints
                         // Checks role in authentication from spring security

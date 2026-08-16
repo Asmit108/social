@@ -14,32 +14,39 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class MessageServiceImplementation implements MessageService {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageRepository messageRepository;
-    private final ChatService chatService;
     private final ChatRepository chatRepository;
 
     @Autowired
-    public MessageServiceImplementation(SimpMessagingTemplate simpMessagingTemplate, MessageRepository messageRepository, ChatService chatService, ChatRepository chatRepository) {
+    public MessageServiceImplementation(SimpMessagingTemplate simpMessagingTemplate, MessageRepository messageRepository, ChatRepository chatRepository) {
         this.messagingTemplate = simpMessagingTemplate;
         this.messageRepository = messageRepository;
-        this.chatService = chatService;
         this.chatRepository = chatRepository;
     }
 
     @Override
     public Message createMessage(Integer userId, Integer chatId, MessageRequest messageRequest) {
         Message message = new Message();
-        Chat chat = chatService.findChatById(chatId);
+        Optional<Chat> opt=chatRepository.findById(chatId);
+        if(opt.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
+        }
+        Chat chat = opt.get();
+        if(!Objects.equals(userId, chat.getUserId1()) && !Objects.equals(chat.getUserId2(), userId)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not allowed to send message");
+        }
         message.setChatId(chatId);
         message.setSenderId(userId);
-        if(chat.getUserId1().equals(userId)) {
+        if(Objects.equals(chat.getUserId1(), userId)) {
             message.setReceiverId(chat.getUserId2());
-        } else if(chat.getUserId2().equals(userId)) {
+        } else if(Objects.equals(chat.getUserId2(), userId)) {
             message.setReceiverId(chat.getUserId1());
         }
         message.setContent(messageRequest.getContent());
@@ -60,7 +67,10 @@ public class MessageServiceImplementation implements MessageService {
 
     @Override
     public List<Message> findChatsMessages(Integer chatId) {
-        chatService.findChatById(chatId);
+        Optional<Chat> opt=chatRepository.findById(chatId);
+        if(opt.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
+        }
         return messageRepository.findByChatId(chatId);
     }
 
@@ -70,8 +80,14 @@ public class MessageServiceImplementation implements MessageService {
         if (message == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
         }
-        Chat chat = chatService.findChatById(message.getChatId());
+        Optional<Chat> opt=chatRepository.findById(message.getChatId());
+        if(opt.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
+        }
+
+        Chat chat = opt.get();
         chat.getMessageIds().remove(messageId);
+        chatRepository.save(chat);
         messageRepository.deleteById(messageId);
     }
 }

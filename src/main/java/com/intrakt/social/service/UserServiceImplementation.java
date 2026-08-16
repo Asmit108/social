@@ -3,10 +3,8 @@ package com.intrakt.social.service;
 import com.intrakt.social.config.JwtProvider;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.UserRepository;
-import com.intrakt.social.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,13 +14,11 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UserService {
 
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
     @Autowired
-    public UserServiceImplementation(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, JwtProvider jwtProvider) {
-        this.passwordEncoder = passwordEncoder;
+    public UserServiceImplementation(UserRepository userRepository, JwtProvider jwtProvider) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
     }
@@ -59,31 +55,6 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User updateUser(UserRequest user, Integer userId) {
-        Optional<User> user1=userRepository.findById(userId);
-        if(user1.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + userId);
-        }
-        User oldUser=user1.get();
-        if(user.getFirstName()!=null){
-            oldUser.setFirstName(user.getFirstName());
-        }
-        if(user.getLastName()!=null){
-            oldUser.setLastName(user.getLastName());
-        }
-        if(user.getEmail()!=null){
-            oldUser.setFirstName(user.getFirstName());
-        }
-        if(user.getPassword()!=null){
-            oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        if(user.getGender()!=null){
-            oldUser.setGender(user.getGender());
-        }
-        return userRepository.save(oldUser);
-    }
-
-    @Override
     public List<User> searchUser(String query) {
         return userRepository.searchUser(query);
     }
@@ -101,5 +72,4 @@ public class UserServiceImplementation implements UserService {
         user = userRepository.save(user);
         return user;
     }
-
 }

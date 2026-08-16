@@ -2,8 +2,8 @@ package com.intrakt.social.service;
 
 import com.intrakt.social.models.Chat;
 import com.intrakt.social.models.Message;
-import com.intrakt.social.models.User;
 import com.intrakt.social.repository.ChatRepository;
+import com.intrakt.social.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import java.util.Optional;
 public class ChatServiceImplementation implements ChatService {
 
     private final ChatRepository chatRepository;
-    private final MessageService messageService;
+    private final MessageRepository messageRepository;
 
     @Autowired
-    public ChatServiceImplementation(ChatRepository chatRepository, MessageService messageService) {
+    public ChatServiceImplementation(ChatRepository chatRepository, MessageRepository messageRepository) {
         this.chatRepository = chatRepository;
-        this.messageService = messageService;
+        this.messageRepository = messageRepository;
     }
 
     @Override
@@ -55,9 +55,16 @@ public class ChatServiceImplementation implements ChatService {
     @Override
     public void deleteChatById(Integer chatId) {
         findChatById(chatId);
-        List<Message> messages = messageService.findChatsMessages(chatId);
+        Optional<Chat> opt=chatRepository.findById(chatId);
+        if(opt.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
+        }
+        Chat chat=opt.get();
+        List<Message> messages = messageRepository.findByChatId(chatId);
         for (Message message : messages) {
-            messageService.deleteMessageById(message.getId());
+            chat.getMessageIds().remove(message.getId());
+            chatRepository.save(chat);
+            messageRepository.deleteById(message.getId());
         }
         chatRepository.deleteById(chatId);
     }

@@ -3,6 +3,7 @@ package com.intrakt.social.controller;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.UserRepository;
 import com.intrakt.social.request.UserRequest;
+import com.intrakt.social.service.CustomeUserDetailsService;
 import com.intrakt.social.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,15 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserController {
 
+    private final CustomeUserDetailsService customeUserDetailsService;
     private final UserRepository userRepository;
     private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(UserRepository userRepository, UserService userService, CustomeUserDetailsService customeUserDetailsService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.customeUserDetailsService = customeUserDetailsService;
     }
 
     @GetMapping("/users")
@@ -41,7 +44,7 @@ public class UserController {
     @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String jwt,@RequestBody UserRequest user) {
         User reqUser=userService.findUserByJwt(jwt);
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user,reqUser.getId()));
+        return ResponseEntity.status(HttpStatus.OK).body(customeUserDetailsService.updateUser(user,reqUser.getId()));
     }
 
     @DeleteMapping("/users")

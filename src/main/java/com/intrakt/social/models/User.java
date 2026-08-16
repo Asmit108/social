@@ -30,11 +30,13 @@ public class User {
         USER,
         ADMIN
     }
+    @Enumerated(EnumType.STRING)
     private Role role;
     public enum Gender {
         MALE,
         FEMALE
     }
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @ManyToMany
@@ -111,7 +113,4 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Reels> createdReel = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Message> createdMessage = new ArrayList<>();
 }

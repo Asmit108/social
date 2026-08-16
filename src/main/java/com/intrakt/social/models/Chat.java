@@ -30,5 +30,5 @@ public class Chat {
 
     private LocalDateTime timestamp;
 
-    private List<Integer> messageIds;
+    private List<Integer> messageIds = new ArrayList<>();
 }

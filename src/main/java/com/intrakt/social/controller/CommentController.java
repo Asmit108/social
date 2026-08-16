@@ -4,6 +4,7 @@ import com.intrakt.social.models.Comment;
 import com.intrakt.social.models.User;
 import com.intrakt.social.service.CommentService;
 import com.intrakt.social.service.UserService;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class CommentController {
     }
 
     @PostMapping("/comments/post/{postId}")
-    public ResponseEntity<Comment> createComment(@RequestBody String req, @RequestHeader("Authorization") String jwt,
-                                                @PathVariable("postId") Integer postId) {
+    public ResponseEntity<Comment> createComment(@RequestBody @NotBlank(message = "Comment is required") String req, @RequestHeader("Authorization") String jwt,
+                                                 @PathVariable("postId") Integer postId) {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(req,postId,user.getId()));
     }

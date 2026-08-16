@@ -31,64 +31,68 @@ public class AuthController {
     private final JwtProvider jwtProvider;
 
     @Autowired
-    public AuthController(BCryptPasswordEncoder passwordEncoder,  CustomeUserDetailsService customUserDetails, UserRepository userRepository, JwtProvider jwtProvider) {
+    public AuthController(BCryptPasswordEncoder passwordEncoder, CustomeUserDetailsService customUserDetails, UserRepository userRepository, JwtProvider jwtProvider) {
         this.passwordEncoder = passwordEncoder;
         this.customUserDetails = customUserDetails;
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> createUser(@RequestBody UserRequest registerRequest) {
-        User isExist=userRepository.findByEmail(registerRequest.getEmail());
-        if(isExist!=null){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists with this email");
+        @PostMapping("/signup")
+        public ResponseEntity<AuthResponse> createUser(@RequestBody UserRequest registerRequest) {
+            User isExist = userRepository.findByEmail(registerRequest.getEmail());
+            if (isExist != null) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists with this email");
+            }
+
+            User newUser = new User();
+            newUser.setEmail(registerRequest.getEmail());
+            newUser.setFirstName(registerRequest.getFirstName());
+            newUser.setLastName(registerRequest.getLastName());
+            newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            try {
+                User.Gender userGender = User.Gender.valueOf(registerRequest.getGender());
+                newUser.setGender(userGender);
+
+                User.Role role = User.Role.valueOf(registerRequest.getRole());
+                newUser.setRole(role);
+            } catch (Exception e) {
+                throw new ResponseStatusException(
+                        HttpStatus.UNPROCESSABLE_ENTITY,
+                        "Invalid gender or role"
+                );
+            }
+            User savedUser = userRepository.save(newUser);
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(), savedUser);
+            String token = jwtProvider.generateToken(authentication);
+            AuthResponse authResponse = new AuthResponse(token, "register success", String.valueOf(savedUser.getRole()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(authResponse);
         }
 
-        User newUser=new User();
-        newUser.setEmail(registerRequest.getEmail());
-        newUser.setFirstName(registerRequest.getFirstName());
-        newUser.setLastName(registerRequest.getLastName());
-        newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        newUser.setGender(registerRequest.getGender());
-        // Parse and set role (normalize to lowercase)
-        User.Role role = registerRequest.getRole();
-        if (User.Role.ADMIN == role) {
-            newUser.setRole(User.Role.ADMIN);
-        } else {
-            newUser.setRole(User.Role.USER);
-        }
-        User savedUser=userRepository.save(newUser);
+        @PostMapping("/signin")
+        public ResponseEntity<AuthResponse> signIn (@RequestBody LoginRequest loginRequest){
+            Authentication authentication = authenticate(loginRequest);
+            String token = jwtProvider.generateToken(authentication);
+            User user = userRepository.findByEmail(loginRequest.getEmail());
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser, savedUser);
-        String token= jwtProvider.generateToken(authentication);
-        AuthResponse authResponse = new AuthResponse(token,"register success", String.valueOf(savedUser.getRole()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(authResponse);
+            AuthResponse authResponse = new AuthResponse(token, "login success", String.valueOf(user.getRole()));
+            return ResponseEntity.status(HttpStatus.OK).body(authResponse);
+        }
+
+        private Authentication authenticate (LoginRequest loginRequest){
+
+            UserDetails userDetails = customUserDetails.loadUserByUsername(loginRequest.getEmail());
+            if (userDetails == null) {
+                throw new BadCredentialsException("invalid username...");
+            }
+            if (!passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())) {
+                throw new BadCredentialsException("wrong password...");
+            }
+
+            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        }
     }
-
-    @PostMapping("/signin")
-    public ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticate(loginRequest);
-        String token= jwtProvider.generateToken(authentication);
-        User user = userRepository.findByEmail(loginRequest.getEmail());
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-
-        AuthResponse authResponse = new AuthResponse(token,"login success", String.valueOf(user.getRole()));
-        return ResponseEntity.status(HttpStatus.OK).body(authResponse);
-    }
-
-    private Authentication authenticate(LoginRequest loginRequest) {
-
-        UserDetails userDetails = customUserDetails.loadUserByUsername(loginRequest.getEmail());
-        if(userDetails==null){
-            throw new BadCredentialsException("invalid username...");
-        }
-        if(!passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())){
-            throw new BadCredentialsException("wrong password...");
-        }
-
-        return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-    }
-}

@@ -59,8 +59,8 @@ public class JwtValidator extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        // Skip JWT validation for Swagger/API documentation endpoints
-        if (path.contains("/swagger-ui") || path.contains("/v3")) {
+        // Skip JWT validation for Swagger/API documentation endpoints and auth endpoints
+        if (path.contains("/swagger-ui") || path.contains("/v3") || path.contains("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -69,14 +69,18 @@ public class JwtValidator extends OncePerRequestFilter {
         String roleHeader = request.getHeader(JwtConstant.ROLE_HEADER);
 
         if (roleHeader == null) {
-            throw new BadCredentialsException("Role header is missing");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Role header is missing");
+            return;
         }
 
         User.Role role;
         try {
             role = User.Role.valueOf(roleHeader);
         } catch (IllegalArgumentException ex) {
-            throw new BadCredentialsException("Invalid role");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid role");
+            return;
         }
 
         // For authentication endpoints, no need to validate JWT token
@@ -90,36 +94,36 @@ public class JwtValidator extends OncePerRequestFilter {
 
         // Validate JWT token exists and has correct format
         if (jwt == null || !jwt.startsWith("Bearer ")) {
-            throw new BadCredentialsException("Invalid or missing JWT token");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid or missing JWT token");
+            return;
         }
 
-        try {
-            // Extract email from JWT token
-            String email = jwtProvider.getEmailFromJwtToken(jwt);
-            User user = userService.findUserByEmail(email);
-            if(user == null){
-                throw new BadCredentialsException("Invalid JWT token: user not found");
-            }
-            if(!Objects.equals(user.getRole(), role)) {
-                throw new BadCredentialsException("Role passed in header is wrong");
-            }
-
-            // Create authorities list with user role
-            Collection<? extends GrantedAuthority> authorities =
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-            // Create authentication object with email and role
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(email, null, authorities);
-
-            // Set authentication in security context for this request
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        } catch (BadCredentialsException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BadCredentialsException("JWT token validation failed", e);
+        // Extract email from JWT token
+        String email = jwtProvider.getEmailFromJwtToken(jwt);
+        User user = userService.findUserByEmail(email);
+        if(user == null){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("User not found");
+            return;
         }
+        if(!Objects.equals(user.getRole(), role)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Role passed in header is wrong");
+            return;
+        }
+
+        // Create authorities list with user role
+        Collection<? extends GrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+        // Create authentication object with email and role
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(email, null, authorities);
+
+        // Set authentication in security context for this request
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
 
         // Continue the request to the next filter in the chain
         filterChain.doFilter(request, response);

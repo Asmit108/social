@@ -55,11 +55,11 @@ pipeline {
                     SPRING_SSL_KEY_STORE_FILE=${SPRING_SSL_KEY_STORE_FILE}
                     """
                     bat '''
-                    scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no target/check-0.0.1-SNAPSHOT.jar ubuntu@3.108.215.224:~/
+                    scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no target/social-0.0.1-SNAPSHOT.jar ubuntu@3.108.215.224:~/
                 
                     scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no .env ubuntu@3.108.215.224:~/social/.env
                 
-                    ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@3.108.215.224 "cd ~/social && mkdir -p target && mv -f ~/check-0.0.1-SNAPSHOT.jar target/ && git pull && docker compose down && docker compose up -d --build"
+                    ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@3.108.215.224 "cd ~/social && mkdir -p target && mv -f ~/social-0.0.1-SNAPSHOT.jar target/ && git pull && docker compose down && docker compose up -d --build"
                     '''
                 }
             }

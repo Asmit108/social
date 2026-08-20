@@ -1,0 +1,38 @@
+services:
+#  mysql-db:
+#    image: mysql:8.0
+#    container_name: mysql-db
+#    environment:
+#      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#      MYSQL_DATABASE: health
+#    ports:
+#      - "3307:3306"
+#    networks:
+#      - app-net
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+
+  social-app:
+    build: .
+    container_name: social-app
+#    depends_on:
+#      - mysql-db
+    ports:
+      - "8000:8000"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_SSL_KEY_STORE_PASSWORD: ${SPRING_SSL_KEY_STORE_PASSWORD}
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+#    networks:
+#      - app-net
+#
+#networks:
+#  app-net:
+#    external: true
+
+#volumes:
+#  mysql-data:

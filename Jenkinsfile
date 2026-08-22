@@ -52,12 +52,14 @@ pipeline {
                     SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
                     JWT_SECRET=${JWT_SECRET}
                     SPRING_SSL_KEY_STORE_PASSWORD=${SPRING_SSL_KEY_STORE_PASSWORD}
-                    SPRING_SSL_KEY_STORE_FILE=${SPRING_SSL_KEY_STORE_FILE}
+                    SPRING_SSL_KEY_STORE_FILE=/keystore.p12
                     """
                     bat '''
                     scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no target/social-0.0.1-SNAPSHOT.jar ubuntu@3.108.215.224:~/
                 
                     scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no .env ubuntu@3.108.215.224:~/social/.env
+                    
+                    scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no "%SPRING_SSL_KEY_STORE_FILE%" ubuntu@3.108.215.224:~/social/keystore.p12
                 
                     ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@3.108.215.224 "cd ~/social && mkdir -p target && mv -f ~/social-0.0.1-SNAPSHOT.jar target/ && git pull && docker compose down && docker compose up -d --build"
                     '''

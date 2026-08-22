@@ -26,6 +26,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       SPRING_SSL_KEY_STORE_PASSWORD: ${SPRING_SSL_KEY_STORE_PASSWORD}
       SPRING_SSL_KEY_STORE_FILE: ${SPRING_SSL_KEY_STORE_FILE}
+    volumes:
+      - ./keystore.p12:/keystore.p12:ro
 #    volumes:
 #      - mysql-data:/var/lib/mysql
 #    networks:

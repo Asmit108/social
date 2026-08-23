@@ -63,7 +63,7 @@ public class AppConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow public access to authentication and API documentation
                         .requestMatchers("/api/auth/**", "/swagger-ui/**",
-                                "/v3/**").permitAll()
+                                "/v3/api-docs/**").permitAll()
                         // Require authentication for all other endpoints
                         // Checks role in authentication from spring security
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

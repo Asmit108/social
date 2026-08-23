@@ -74,7 +74,6 @@ public class JwtProvider {
                 .getBody();
 
         // Retrieve and return email from claims
-        String email = String.valueOf(claims.get("email"));
-        return email;
+        return String.valueOf(claims.get("email"));
     }
 }

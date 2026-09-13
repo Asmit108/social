@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Comment Controller", description = "Endpoints for managing comments")
@@ -32,6 +34,12 @@ public class CommentController {
                                                  @PathVariable("postId") Integer postId) {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(req,postId,user.getId()));
+    }
+
+    @GetMapping("/comments/post/{postId}")
+    @Operation(summary = "Get comments for a post", description = "Retrieves all comments for the specified post.")
+    public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable("postId") Integer postId) {
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.findCommentsByPostId(postId));
     }
 
     @PutMapping("/comments/like/{commentId}")

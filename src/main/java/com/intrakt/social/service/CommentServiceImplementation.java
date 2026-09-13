@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -66,6 +67,11 @@ public class CommentServiceImplementation implements CommentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found");
         }
         return opt.get();
+    }
+
+    @Override
+    public List<Comment> findCommentsByPostId(Integer postId) {
+        return commentRepository.findByPost_Id(postId);
     }
 
     @Override

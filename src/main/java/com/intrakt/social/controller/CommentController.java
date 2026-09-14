@@ -56,4 +56,12 @@ public class CommentController {
         commentService.deleteCommentById(commentId);
         return ResponseEntity.status(HttpStatus.OK).body("Comment deleted successfully");
     }
+
+    @DeleteMapping("/comments/{commentId}")
+    @Operation(summary = "Delete a comment", description = "Deletes the comment identified by the provided ID.")
+    public ResponseEntity<String> deleteOwnComment(@RequestHeader("Authorization") String jwt, @PathVariable("commentId") Integer commentId) {
+        User user = userService.findUserByJwt(jwt);
+        commentService.deleteOwnComment(commentId, user.getId());
+        return ResponseEntity.status(HttpStatus.OK).body("Comment deleted successfully");
+    }
 }

@@ -1,7 +1,6 @@
 package com.intrakt.social.repository;
 
 import com.intrakt.social.models.Chat;
-import com.intrakt.social.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

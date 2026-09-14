@@ -48,10 +48,24 @@ public class ChatController {
         return ResponseEntity.status(HttpStatus.OK).body(chatService.findUsersChat(user.getId()));
     }
 
+    @GetMapping("/admin/chats")
+    @Operation(summary = "Get all chats", description = "Retrieves all chats")
+    public ResponseEntity<List<Chat>> findAllChats() {
+        return ResponseEntity.status(HttpStatus.OK).body(chatService.findAllChats());
+    }
+
     @DeleteMapping("/admin/chats/{chatId}")
     @Operation(summary = "Delete a chat", description = "Deletes a chat identified by the provided ID.")
     public ResponseEntity<String> deleteChat(@PathVariable("chatId") Integer chatId) {
         chatService.deleteChatById(chatId);
+        return ResponseEntity.status(HttpStatus.OK).body("chat deleted sucessfully");
+    }
+
+    @DeleteMapping("/chats/{chatId}")
+    @Operation(summary = "Delete a chat", description = "Deletes a chat identified by the provided ID.")
+    public ResponseEntity<String> deleteOwnChat(@RequestHeader("Authorization") String jwt, @PathVariable("chatId") Integer chatId) {
+        User user = userService.findUserByJwt(jwt);
+        chatService.deleteOwnChat(chatId, user.getId());
         return ResponseEntity.status(HttpStatus.OK).body("chat deleted sucessfully");
     }
 }

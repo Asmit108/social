@@ -10,4 +10,5 @@ public interface CommentService {
     Comment findCommentById(Integer commentId);
     List<Comment> findCommentsByPostId(Integer postId);
     void deleteCommentById(Integer commentId);
+    void deleteOwnComment(Integer commentId, Integer userId);
 }

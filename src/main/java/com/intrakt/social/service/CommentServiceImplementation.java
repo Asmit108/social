@@ -79,4 +79,13 @@ public class CommentServiceImplementation implements CommentService {
         findCommentById(commentId);
         commentRepository.deleteById(commentId);
     }
+
+    @Override
+    public void deleteOwnComment(Integer commentId, Integer userId) {
+        Comment comment = findCommentById(commentId);
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only delete your own comments");
+        }
+        commentRepository.deleteById(commentId);
+    }
 }

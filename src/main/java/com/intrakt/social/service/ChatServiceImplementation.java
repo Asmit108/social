@@ -53,13 +53,28 @@ public class ChatServiceImplementation implements ChatService {
     }
 
     @Override
+    public List<Chat> findAllChats() {
+        return chatRepository.findAll();
+    }
+
+    @Override
     public void deleteChatById(Integer chatId) {
-        findChatById(chatId);
-        Optional<Chat> opt=chatRepository.findById(chatId);
-        if(opt.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
+        Chat chat = findChatById(chatId);
+        List<Message> messages = messageRepository.findByChatId(chatId);
+        for (Message message : messages) {
+            chat.getMessageIds().remove(message.getId());
+            chatRepository.save(chat);
+            messageRepository.deleteById(message.getId());
         }
-        Chat chat=opt.get();
+        chatRepository.deleteById(chatId);
+    }
+
+    @Override
+    public void deleteOwnChat(Integer chatId, Integer userId) {
+        Chat chat = findChatById(chatId);
+        if (!chat.getUserId1().equals(userId) && !chat.getUserId2().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only delete your own chats");
+        }
         List<Message> messages = messageRepository.findByChatId(chatId);
         for (Message message : messages) {
             chat.getMessageIds().remove(message.getId());

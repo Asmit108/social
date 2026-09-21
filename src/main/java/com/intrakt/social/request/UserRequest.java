@@ -1,6 +1,5 @@
 package com.intrakt.social.request;
 
-import com.intrakt.social.models.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;

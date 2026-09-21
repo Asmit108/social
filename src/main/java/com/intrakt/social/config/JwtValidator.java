@@ -59,17 +59,14 @@ public class JwtValidator extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        // Skip JWT validation for Swagger/API documentation endpoints and auth endpoints
-        if (path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs")
-                || path.startsWith("/api/auth/")) {
+        // Skip JWT validation for Swagger/API documentation endpoints
+        if (path.contains("/swagger-ui") || path.contains("/v3")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // Extract role from request header
         String roleHeader = request.getHeader(JwtConstant.ROLE_HEADER);
-
         if (roleHeader == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Role header is missing");
@@ -85,7 +82,7 @@ public class JwtValidator extends OncePerRequestFilter {
             return;
         }
 
-        // For authentication endpoints, no need to validate JWT token
+        // For authentication endpoints, validate that role is either PATIENT or DOCTOR
         if (path.contains("/auth/")) {
             filterChain.doFilter(request, response);
             return;
@@ -101,31 +98,39 @@ public class JwtValidator extends OncePerRequestFilter {
             return;
         }
 
-        // Extract email from JWT token
-        String email = jwtProvider.getEmailFromJwtToken(jwt);
-        User user = userService.findUserByEmail(email);
-        if(user == null){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("User not found");
-            return;
+        try {
+            // Extract email from JWT token
+            String email = jwtProvider.getEmailFromJwtToken(jwt);
+            User user = userService.findUserByEmail(email);
+            if(user == null){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("User not found");
+                return;
+            }
+            if(!Objects.equals(user.getRole(), role)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Role passed in header is wrong");
+                return;
+            }
+            // Create authorities list with user role
+            Collection<? extends GrantedAuthority> authorities =
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+            // Create authentication object with email and role
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(email, null, authorities);
+
+            // Set authentication in security context for this request
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (Exception e) {
+            if ("Role passed in header is wrong".equals(e.getMessage())) {
+                throw new RuntimeException("Role passed in header is wrong");
+            }
+            else{
+                throw new BadCredentialsException("Invalid JWT token");
+            }
         }
-        if(!Objects.equals(user.getRole(), role)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Role passed in header is wrong");
-            return;
-        }
-
-        // Create authorities list with user role
-        Collection<? extends GrantedAuthority> authorities =
-                List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-        // Create authentication object with email and role
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(email, null, authorities);
-
-        // Set authentication in security context for this request
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
 
         // Continue the request to the next filter in the chain
         filterChain.doFilter(request, response);

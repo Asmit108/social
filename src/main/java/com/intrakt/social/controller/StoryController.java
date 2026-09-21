@@ -31,20 +31,20 @@ public class StoryController {
 
     @PostMapping("/story")
     @Operation(summary = "Create a new story", description = "Creates a new story for the authenticated user.")
-    public ResponseEntity<Story> createStory(@Valid @RequestBody StoryRequest story, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Story> createStory(@Valid @RequestBody StoryRequest story, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(storyService.createStory(story,user));
     }
 
     @GetMapping("/story/user/{userId}")
     @Operation(summary = "Get stories by user ID", description = "Retrieves all stories created by the user identified by the provided ID.")
-    public ResponseEntity<List<Story>> findUserStory(@PathVariable("userId") Integer userId) {
+    public ResponseEntity<List<Story>> findUserStory(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         return ResponseEntity.status(HttpStatus.OK).body(storyService.findStoryByUserId(userId));
     }
 
     @DeleteMapping("/admin/story/{storyId}")
     @Operation(summary = "Delete a story", description = "Deletes the story identified by the provided ID.")
-    public ResponseEntity<String> deleteStory(@PathVariable("storyId") Integer storyId) {
+    public ResponseEntity<String> deleteStory(@PathVariable("storyId") Integer storyId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         storyService.deleteStoryById(storyId);
         return ResponseEntity.status(HttpStatus.OK).body("Story deleted successfully");
     }

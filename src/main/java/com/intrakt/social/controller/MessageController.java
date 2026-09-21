@@ -31,20 +31,20 @@ public class MessageController {
 
     @PostMapping("/messages/chat/{chatId}")
     @Operation(summary = "Send a message", description = "Sends a new message in the specified chat.")
-    public ResponseEntity<Message> createMessage(@PathVariable("chatId") Integer chatId, @Valid @RequestBody MessageRequest message, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Message> createMessage(@PathVariable("chatId") Integer chatId, @Valid @RequestBody MessageRequest message, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User reqUser = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(messageService.createMessage(reqUser.getId(),chatId,message));
     }
 
     @GetMapping("/messages/chat/{chatId}")
     @Operation(summary = "Get messages for a chat", description = "Retrieves all messages for the specified chat.")
-    public ResponseEntity<List<Message>> findChatMessages(@PathVariable("chatId") Integer chatId) {
+    public ResponseEntity<List<Message>> findChatMessages(@PathVariable("chatId") Integer chatId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         return ResponseEntity.status(HttpStatus.OK).body(messageService.findChatsMessages(chatId));
     }
 
     @DeleteMapping("/admin/messages/{messageId}")
     @Operation(summary = "Delete a message", description = "Deletes the message identified by the provided ID.")
-    public ResponseEntity<String> deleteMessage(@PathVariable("messageId") Integer messageId) {
+    public ResponseEntity<String> deleteMessage(@PathVariable("messageId") Integer messageId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         messageService.deleteMessageById(messageId);
         return ResponseEntity.status(HttpStatus.OK).body("Message deleted successfully");
     }

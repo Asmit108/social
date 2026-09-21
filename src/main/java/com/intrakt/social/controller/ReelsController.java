@@ -31,26 +31,26 @@ public class ReelsController {
 
     @PostMapping("/reels")
     @Operation(summary = "Create a new reel", description = "Creates a new reel with the provided details.")
-    public ResponseEntity<Reels> createReels(@Valid @RequestBody ReelsRequest reels, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Reels> createReels(@Valid @RequestBody ReelsRequest reels, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User user = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(reelsService.createReel(reels,user));
     }
 
     @GetMapping("/reels")
     @Operation(summary = "Get all reels", description = "Retrieves all reels.")
-    public ResponseEntity<List<Reels>> findAllReels(){
+    public ResponseEntity<List<Reels>> findAllReels(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role){
         return ResponseEntity.status(HttpStatus.OK).body(reelsService.findAllReels());
     }
 
     @GetMapping("/reels/user/{userId}")
     @Operation(summary = "Get reels by user ID", description = "Retrieves all reels created by the user identified by the provided ID.")
-    public ResponseEntity<List<Reels>> findUsersReels(@PathVariable("userId") Integer userId) {
+    public ResponseEntity<List<Reels>> findUsersReels(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         return ResponseEntity.status(HttpStatus.OK).body(reelsService.findUsersReel(userId));
     }
 
     @DeleteMapping("/admin/reels/{reelsId}")
     @Operation(summary = "Delete a reel", description = "Deletes the reel identified by the provided ID.")
-    public ResponseEntity<String> deleteReels(@PathVariable("reelsId") Integer reelsId) {
+    public ResponseEntity<String> deleteReels(@PathVariable("reelsId") Integer reelsId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         reelsService.deleteReelsById(reelsId);
         return ResponseEntity.status(HttpStatus.OK).body("Reels deleted successfully");
     }

@@ -35,13 +35,13 @@ public class UserController {
 
     @GetMapping("/users")
     @Operation(summary = "Get all users", description = "Retrieves a list of all users.")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<User>> getUsers(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
     }
 
     @GetMapping("/users/{userId}")
     @Operation(summary = "Get user by ID", description = "Retrieves the user identified by the provided ID.")
-    public ResponseEntity<User> getUserById(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<User> getUserById(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User user=userService.findUserById(userId);
         userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(user);
@@ -49,14 +49,14 @@ public class UserController {
 
     @PutMapping("/users")
     @Operation(summary = "Update user", description = "Updates the details of an existing user.")
-    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String jwt,@Valid @RequestBody UserRequest user) {
+    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role, @Valid @RequestBody UserRequest user) {
         User reqUser=userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(customeUserDetailsService.updateUser(user,reqUser.getId()));
     }
 
     @DeleteMapping("/users")
     @Operation(summary = "Delete user", description = "Deletes the user identified by the provided JWT.")
-    public ResponseEntity<String> removeAccount( @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<String> removeAccount(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User reqUser=userService.findUserByJwt(jwt);
         userRepository.deleteById(reqUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body("user deleted successfully");
@@ -64,20 +64,20 @@ public class UserController {
 
     @PutMapping("/users/follow/{userId2}")
     @Operation(summary = "Follow user", description = "Allows the authenticated user to follow another user.")
-    public ResponseEntity<User> followUserHandler(@RequestHeader("Authorization") String jwt,@PathVariable Integer userId2) {
+    public ResponseEntity<User> followUserHandler(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role, @PathVariable Integer userId2) {
         User reqUser=userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(userService.followUser(reqUser.getId(),userId2));
     }
 
     @GetMapping("/users/search")
     @Operation(summary = "Search users", description = "Searches for users based on the provided query.")
-    public ResponseEntity<List<User>> searchUser(@RequestParam("query") String query) {
+    public ResponseEntity<List<User>> searchUser(@RequestParam("query") String query, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.searchUser(query));
     }
 
     @GetMapping("/users/profile")
     @Operation(summary = "Get user profile", description = "Retrieves the profile of the authenticated user.")
-    public ResponseEntity<User> getOwnProfile(@RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<User> getOwnProfile(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User user=userService.findUserByJwt(jwt);
         user.setPassword(null);
         return ResponseEntity.status(HttpStatus.OK).body(user);
@@ -85,7 +85,7 @@ public class UserController {
 
     @DeleteMapping("/admin/users/{userId}")
     @Operation(summary = "Delete user", description = "Deletes the user identified by the provided ID.")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         Optional<User> user1=userRepository.findById(userId);
         userService.findUserByJwt(jwt);
         if(user1.isEmpty()) {
@@ -97,7 +97,7 @@ public class UserController {
 
     @PutMapping("/admin/users/{userId}")
     @Operation(summary = "Update user", description = "Updates the details of an existing user identified by the provided ID.")
-    public ResponseEntity<User> changeRole(@PathVariable Integer userId, @RequestParam("newRole") String newRole) {
+    public ResponseEntity<User> changeRole(@PathVariable Integer userId, @RequestParam("newRole") String newRole, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.changeRole(userId, newRole));
     }
 }

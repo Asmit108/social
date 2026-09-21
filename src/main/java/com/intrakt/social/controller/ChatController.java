@@ -7,6 +7,7 @@ import com.intrakt.social.service.ChatService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class ChatController {
 
     @PostMapping("/chats")
     @Operation(summary = "Create a new chat", description = "Creates a new chat between two users.")
-    public ResponseEntity<Chat> createChat(@RequestBody CreateChatRequest req,
+    public ResponseEntity<Chat> createChat(@Valid @RequestBody CreateChatRequest req,
                                           @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         User user2 = userService.findUserById(req.getUserId());

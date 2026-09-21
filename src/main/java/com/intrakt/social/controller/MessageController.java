@@ -7,6 +7,7 @@ import com.intrakt.social.service.MessageService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class MessageController {
 
     @PostMapping("/messages/chat/{chatId}")
     @Operation(summary = "Send a message", description = "Sends a new message in the specified chat.")
-    public ResponseEntity<Message> createMessage(@PathVariable("chatId") Integer chatId, @RequestBody MessageRequest message, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Message> createMessage(@PathVariable("chatId") Integer chatId, @Valid @RequestBody MessageRequest message, @RequestHeader("Authorization") String jwt) {
         User reqUser = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(messageService.createMessage(reqUser.getId(),chatId,message));
     }

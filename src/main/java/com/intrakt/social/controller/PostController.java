@@ -8,6 +8,7 @@ import com.intrakt.social.service.PostService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class PostController {
 
     @PostMapping("/posts/user")
     @Operation(summary = "Create a new post", description = "Creates a new post for the authenticated user.")
-    public ResponseEntity<Post> createPost(@RequestHeader("Authorization") String jwt, @RequestBody PostRequest post) {
+    public ResponseEntity<Post> createPost(@RequestHeader("Authorization") String jwt, @Valid @RequestBody PostRequest post) {
         User reqUser = userService.findUserByJwt(jwt);
         Post createdPost = postService.createNewPost(post,reqUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);

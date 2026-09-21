@@ -7,6 +7,7 @@ import com.intrakt.social.service.StoryService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class StoryController {
 
     @PostMapping("/story")
     @Operation(summary = "Create a new story", description = "Creates a new story for the authenticated user.")
-    public ResponseEntity<Story> createStory(@RequestBody StoryRequest story, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Story> createStory(@Valid @RequestBody StoryRequest story, @RequestHeader("Authorization") String jwt) {
         User user =userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(storyService.createStory(story,user));
     }

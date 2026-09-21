@@ -7,6 +7,7 @@ import com.intrakt.social.service.ReelsService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class ReelsController {
 
     @PostMapping("/reels")
     @Operation(summary = "Create a new reel", description = "Creates a new reel with the provided details.")
-    public ResponseEntity<Reels> createReels(@RequestBody ReelsRequest reels, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Reels> createReels(@Valid @RequestBody ReelsRequest reels, @RequestHeader("Authorization") String jwt) {
         User user = userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(reelsService.createReel(reels,user));
     }

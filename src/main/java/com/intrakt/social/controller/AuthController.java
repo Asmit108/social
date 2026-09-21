@@ -9,6 +9,7 @@ import com.intrakt.social.response.AuthResponse;
 import com.intrakt.social.service.CustomeUserDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "User Registration", description = "Registers a new user with the provided details.")
-    public ResponseEntity<AuthResponse> createUser(@RequestBody UserRequest registerRequest) {
+    public ResponseEntity<AuthResponse> createUser(@Valid @RequestBody UserRequest registerRequest) {
         User isExist = userRepository.findByEmail(registerRequest.getEmail());
         if (isExist != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists with this email");
@@ -76,7 +77,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     @Operation(summary = "User Login", description = "Authenticates a user and returns a JWT token upon successful login.")
-    public ResponseEntity<AuthResponse> signIn(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponse> signIn(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticate(loginRequest);
         String token = jwtProvider.generateToken(authentication);
         User user = userRepository.findByEmail(loginRequest.getEmail());

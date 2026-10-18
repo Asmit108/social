@@ -2,10 +2,13 @@ package com.intrakt.social.controller;
 
 import com.intrakt.social.models.Comment;
 import com.intrakt.social.models.User;
+import com.intrakt.social.request.CommentRequest;
+import com.intrakt.social.response.CommentDto;
 import com.intrakt.social.service.CommentService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,16 +33,35 @@ public class CommentController {
 
     @PostMapping("/comments/post/{postId}")
     @Operation(summary = "Create a new comment", description = "Creates a new comment for the specified post.")
-    public ResponseEntity<Comment> createComment(@RequestBody @NotBlank(message = "Comment is required") String req, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role,
+    public ResponseEntity<Comment> createComment(@Valid @RequestBody CommentRequest req, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role,
                                                  @PathVariable("postId") Integer postId) {
         User user =userService.findUserByJwt(jwt);
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(req,postId,user.getId()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(req.getContent(),postId,user.getId()));
     }
 
     @GetMapping("/comments/post/{postId}")
     @Operation(summary = "Get comments for a post", description = "Retrieves all comments for the specified post.")
-    public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable("postId") Integer postId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.findCommentsByPostId(postId));
+    public ResponseEntity<List<CommentDto>> getCommentsByPostId(@PathVariable("postId") Integer postId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
+        List<Comment> comments = commentService.findCommentsByPostId(postId);
+        List<CommentDto> commentDtos = comments.stream()
+                .map(comment -> {
+                    CommentDto dto = new CommentDto();
+
+                    dto.setId(comment.getId());
+                    dto.setContent(comment.getContent());
+                    dto.setUserId(comment.getUser().getId());
+                    dto.setLiked(
+                            comment.getLiked()
+                                    .stream()
+                                    .map(User::getId)
+                                    .toList()
+                    );
+
+                    return dto;
+                })
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(commentDtos);
     }
 
     @PutMapping("/comments/like/{commentId}")

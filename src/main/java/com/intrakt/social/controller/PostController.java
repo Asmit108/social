@@ -1,9 +1,13 @@
 package com.intrakt.social.controller;
 
+import com.intrakt.social.mapper.PostMapper;
 import com.intrakt.social.models.Post;
 import com.intrakt.social.models.User;
 import com.intrakt.social.request.PostRequest;
 import com.intrakt.social.response.ApiResponse;
+import com.intrakt.social.response.CommentDto;
+import com.intrakt.social.response.PostDto;
+import com.intrakt.social.response.UserDto;
 import com.intrakt.social.service.PostService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,16 +60,18 @@ public class PostController {
 
     @GetMapping("/posts/user/{userId}")
     @Operation(summary = "Get posts by user ID", description = "Retrieves all posts created by the user identified by the provided ID.")
-    public ResponseEntity<List<Post>> findUsersPost(@PathVariable Integer userId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
+    public ResponseEntity<List<PostDto>> findUsersPost(@PathVariable Integer userId, @RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         List<Post> posts=postService.findPostByUserId(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
+        List<PostDto> postDtos = PostMapper.toDtoList(posts);
+        return ResponseEntity.status(HttpStatus.OK).body(postDtos);
     }
 
     @GetMapping("/posts")
     @Operation(summary = "Get all posts", description = "Retrieves all posts.")
-    public ResponseEntity<List<Post>> findAllPosts(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
+    public ResponseEntity<List<PostDto>> findAllPosts(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         List<Post> posts=postService.findAllPosts();
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
+        List<PostDto> postDtos = PostMapper.toDtoList(posts);
+        return ResponseEntity.status(HttpStatus.OK).body(postDtos);
     }
 
     @PutMapping("/posts/{postId}")
@@ -86,9 +92,10 @@ public class PostController {
 
     @GetMapping("/posts/top")
     @Operation(summary = "Get top posts", description = "Retrieves the top posts based on likes.")
-    public ResponseEntity<List<Post>> getTopPosts(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
+    public ResponseEntity<List<PostDto>> getTopPosts(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         List<Post> post = postService.getTopPosts();
-        return ResponseEntity.status(HttpStatus.OK).body(post);
+        List<PostDto> postDtos = PostMapper.toDtoList(post);
+        return ResponseEntity.status(HttpStatus.OK).body(postDtos);
     }
 
     @DeleteMapping("/admin/posts/{postId}")

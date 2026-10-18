@@ -26,9 +26,19 @@ public class Chat {
 
     private Integer userId1;
 
+    private String senderFirstName;
+
+    private String senderLastName;
+
+    private String senderEmail;
+
     private Integer userId2;
 
-    private LocalDateTime timestamp;
+    private String receiverFirstName;
 
-    private List<Integer> messageIds = new ArrayList<>();
+    private String receiverLastName;
+
+    private String receiverEmail;
+
+    private LocalDateTime timestamp;
 }

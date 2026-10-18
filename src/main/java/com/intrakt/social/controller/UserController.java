@@ -1,13 +1,15 @@
 package com.intrakt.social.controller;
 
+import com.intrakt.social.models.Chat;
 import com.intrakt.social.models.User;
 import com.intrakt.social.repository.UserRepository;
 import com.intrakt.social.request.UserRequest;
+import com.intrakt.social.response.UserDto;
+import com.intrakt.social.service.ChatService;
 import com.intrakt.social.service.CustomeUserDetailsService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +27,31 @@ public class UserController {
     private final CustomeUserDetailsService customeUserDetailsService;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ChatService chatService;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserService userService, CustomeUserDetailsService customeUserDetailsService) {
+    public UserController(UserRepository userRepository, UserService userService, CustomeUserDetailsService customeUserDetailsService, ChatService chatService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.customeUserDetailsService = customeUserDetailsService;
+        this.chatService = chatService;
     }
 
     @GetMapping("/users")
     @Operation(summary = "Get all users", description = "Retrieves a list of all users.")
-    public ResponseEntity<List<User>> getUsers(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+    public ResponseEntity<List<UserDto>> getUsers(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDtos = users.stream()
+                .map(user -> new UserDto(
+                        user.getId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getRole(),
+                        user.getGender()
+                ))
+                .toList();
+        return ResponseEntity.status(HttpStatus.OK).body(userDtos);
     }
 
     @GetMapping("/users/{userId}")
@@ -49,7 +64,7 @@ public class UserController {
 
     @PutMapping("/users")
     @Operation(summary = "Update user", description = "Updates the details of an existing user.")
-    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role, @Valid @RequestBody UserRequest user) {
+    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role, @RequestBody UserRequest user) {
         User reqUser=userService.findUserByJwt(jwt);
         return ResponseEntity.status(HttpStatus.OK).body(customeUserDetailsService.updateUser(user,reqUser.getId()));
     }
@@ -58,6 +73,10 @@ public class UserController {
     @Operation(summary = "Delete user", description = "Deletes the user identified by the provided JWT.")
     public ResponseEntity<String> removeAccount(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User reqUser=userService.findUserByJwt(jwt);
+        List<Chat> chats = chatService.findUsersChat(reqUser.getId());
+        for (Chat chat : chats) {
+            chatService.deleteChatById(chat.getId());
+        }
         userRepository.deleteById(reqUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body("user deleted successfully");
     }
@@ -90,6 +109,10 @@ public class UserController {
         userService.findUserByJwt(jwt);
         if(user1.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + userId);
+        }
+        List<Chat> chats = chatService.findUsersChat(userId);
+        for (Chat chat : chats) {
+            chatService.deleteChatById(chat.getId());
         }
         userRepository.deleteById(userId);
         return ResponseEntity.status(HttpStatus.OK).body("user deleted successfully");

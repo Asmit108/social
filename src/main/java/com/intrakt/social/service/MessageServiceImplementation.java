@@ -25,7 +25,7 @@ public class MessageServiceImplementation implements MessageService {
     private final ChatRepository chatRepository;
 
     @Autowired
-    public MessageServiceImplementation(SimpMessagingTemplate simpMessagingTemplate, MessageRepository messageRepository, ChatRepository chatRepository) {
+    public MessageServiceImplementation( MessageRepository messageRepository, ChatRepository chatRepository, SimpMessagingTemplate simpMessagingTemplate) {
         this.messagingTemplate = simpMessagingTemplate;
         this.messageRepository = messageRepository;
         this.chatRepository = chatRepository;
@@ -52,17 +52,14 @@ public class MessageServiceImplementation implements MessageService {
         message.setContent(messageRequest.getContent());
         message.setImage(messageRequest.getImage());
         message.setTimestamp(LocalDateTime.now());
-        Message savedMessage = messageRepository.save(message);
-        chat.getMessageIds().add(savedMessage.getId());
-        chatRepository.save(chat);
-        // 3. Send real-time message
+//         3. Send real-time message
         messagingTemplate.convertAndSendToUser(
-                savedMessage.getReceiverId().toString(),
+                message.getReceiverId().toString(),
                 "/queue/messages",
-                savedMessage
+                message
         );
 
-        return savedMessage;
+        return messageRepository.save(message);
     }
 
     @Override
@@ -80,14 +77,6 @@ public class MessageServiceImplementation implements MessageService {
         if (message == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
         }
-        Optional<Chat> opt=chatRepository.findById(message.getChatId());
-        if(opt.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
-        }
-
-        Chat chat = opt.get();
-        chat.getMessageIds().remove(messageId);
-        chatRepository.save(chat);
         messageRepository.deleteById(messageId);
     }
 }

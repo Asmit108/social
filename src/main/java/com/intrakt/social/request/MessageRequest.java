@@ -12,6 +12,5 @@ public class MessageRequest {
 
     @NotBlank(message = "Content is required")
     private String content;
-    @NotBlank(message = "Image is required")
     private String image;
 }

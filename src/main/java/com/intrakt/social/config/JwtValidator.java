@@ -62,7 +62,8 @@ public class JwtValidator extends OncePerRequestFilter {
         // Skip JWT validation for Swagger/API documentation endpoints and auth endpoints
         if (path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
-                || path.startsWith("/api/auth/")) {
+                || path.startsWith("/api/auth/")
+                || path.startsWith("/ws")) {
             filterChain.doFilter(request, response);
             return;
         }

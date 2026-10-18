@@ -3,6 +3,7 @@ package com.intrakt.social.controller;
 import com.intrakt.social.models.Chat;
 import com.intrakt.social.models.User;
 import com.intrakt.social.request.CreateChatRequest;
+import com.intrakt.social.response.UserChatResponse;
 import com.intrakt.social.service.ChatService;
 import com.intrakt.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,14 +39,38 @@ public class ChatController {
         if(reqUser.equals(user2)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot create chat with yourself");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(chatService.createChat(user2.getId(),reqUser.getId()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatService.createChat(user2.getId(), user2.getEmail(), user2.getFirstName(),user2.getLastName(), reqUser));
     }
 
     @GetMapping("/chats")
     @Operation(summary = "Get all chats for the authenticated user", description = "Retrieves all chats for the user identified by the provided JWT.")
-    public ResponseEntity<List<Chat>> findUsersChat(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
+    public ResponseEntity<List<UserChatResponse>> findUsersChat(@RequestHeader("Authorization") String jwt, @RequestHeader("Role") String role) {
         User user = userService.findUserByJwt(jwt);
-        return ResponseEntity.status(HttpStatus.OK).body(chatService.findUsersChat(user.getId()));
+        List<Chat> chats = chatService.findUsersChat(user.getId());
+        List<UserChatResponse> chatResponses = chats.stream()
+                .map(chat -> {
+                    if (user.getId().equals(chat.getUserId1())) {
+                        return new UserChatResponse(
+                                chat.getId(),
+                                chat.getChatName(),
+                                chat.getUserId2(),
+                                chat.getReceiverFirstName(),
+                                chat.getReceiverLastName(),
+                                chat.getReceiverEmail()
+                        );
+                    } else {
+                        return new UserChatResponse(
+                                chat.getId(),
+                                chat.getChatName(),
+                                chat.getUserId1(),
+                                chat.getSenderFirstName(),
+                                chat.getSenderLastName(),
+                                chat.getSenderEmail()
+                        );
+                    }
+                })
+                .toList();
+        return ResponseEntity.status(HttpStatus.OK).body(chatResponses);
     }
 
     @GetMapping("/admin/chats")

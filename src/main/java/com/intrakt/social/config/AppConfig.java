@@ -66,7 +66,8 @@ public class AppConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/ws"
                         ).permitAll()
                         // Require authentication for all other endpoints
                         // Checks role in authentication from spring security
@@ -99,7 +100,7 @@ public class AppConfig {
             CorsConfiguration cfg = new CorsConfiguration();
 
             // Allow requests from frontend (localhost:4000)
-            cfg.setAllowedOrigins(List.of("http://localhost:4000")); // no trailing slash
+            cfg.setAllowedOrigins(List.of("https://13.233.194.9:3000")); // no trailing slash
 
             // Allow standard HTTP methods
             cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));

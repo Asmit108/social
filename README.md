@@ -1,6 +1,6 @@
 # Social Networking Platform
 
-A full-stack social networking application built with React and Java Spring Boot.
+A backend social networking application built with Java and Spring Boot.
 
 ## Backend API Documentation
 
@@ -17,6 +17,7 @@ A full-stack social networking application built with React and Java Spring Boot
 
 - User authentication and authorization
 - Social post management and user interactions
+- Real-time messaging service
 
 ## API Testing
 

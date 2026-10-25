@@ -26,4 +26,40 @@ A backend social networking application built with Java and Spring Boot.
 3. Review the request parameters and response schema.
 4. Click **Try it out** to test the endpoint.
 
+## Build and Run Locally
+
+### Pre-Requisites
+- Java 17
+- Maven
+- MySQL
+
+### 1. Clone the Repository
+```bash
+git clone <your-repository-url>
+cd social
+```
+
+### 2. Configure the Database
+Update `src/main/resources/application.properties` with your MySQL database credentials.
+
+### 3. Build the Application
+```bash
+mvn clean install
+```
+
+### 4. Run the Application
+```bash
+mvn spring-boot:run
+```
+
+Alternatively, run the generated JAR:
+```bash
+java -jar target/check-0.0.1-SNAPSHOT.jar
+```
+
+### 5. Access Swagger UI
+Once the application is running, open:
+
+http://localhost:8000/swagger-ui/index.html
+
 **Note:** The Swagger UI requires the backend server to be running and accessible.

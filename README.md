@@ -1,29 +1,28 @@
-Social Networking Platform
-A social networking application with a Java Spring Boot backend.
-Backend API Documentation
-Explore and test the backend REST APIs using Swagger UI:
+# Social Networking Platform
 
-Open Swagger API Documentation
-Note: The API documentation is available only while the backend service and its hosting environment are running and reachable.
+A full-stack social networking application built with React and Java Spring Boot.
 
-Tech Stack
-- Frontend: React
-- Backend: Java, Spring Boot
-- Database: MySQL
-- Authentication: JWT, role-based authorization
-- Deployment: Docker, Jenkins, AWS EC2
-Features
+## Backend API Documentation
+
+[Swagger UI](https://13.233.194.9:8000/swagger-ui/index.html)
+
+## Tech Stack
+
+- **Backend:** Java, Spring Boot
+- **Database:** MySQL
+- **Authentication:** JWT, Role-Based Authorization
+- **DevOps & Deployment:** Docker, Jenkins, AWS EC2
+
+## Features
+
 - User authentication and authorization
-- Social post and user interaction functionality
-- REST API integration between frontend and backend
-Project Structure
-The application is organized into separate frontend and backend components.
-- Frontend: React user interface
-- Backend: Spring Boot REST APIs and business logic
-Running Locally
-To run the project locally, configure the required database and application settings, then start the backend and frontend using their respective project instructions.
-API Testing
-1. Open the Swagger UI.
-2. Select an endpoint.
-3. Review its request parameters and response schema.
-4. Use Try it out to test endpoints where supported. Authenticated endpoints may require a valid JWT.
+- Social post management and user interactions
+
+## API Testing
+
+1. Open the [Swagger UI](https://13.233.194.9:8000/swagger-ui/index.html).
+2. Select an API endpoint.
+3. Review the request parameters and response schema.
+4. Click **Try it out** to test the endpoint.
+
+**Note:** The Swagger UI requires the backend server to be running and accessible.
